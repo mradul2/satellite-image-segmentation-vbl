@@ -10,6 +10,9 @@ from pprint import pprint
 
 from utils.dirs import create_dirs
 
+import hydra
+from omegaconf import DictConfig, OmegaConf
+
 
 def setup_logging(log_dir):
     log_file_format = "[%(levelname)s] - %(asctime)s - %(name)s - : %(message)s in %(pathname)s:%(lineno)d"
