@@ -91,6 +91,9 @@ class Agent(BaseAgent):
             self.model.load_state_dict(checkpoint['state_dict'])
             self.optimizer.load_state_dict(checkpoint['optimizer'])
 
+        except:
+            print("Any pretrained checkpoint not present")
+
 
     def run(self):
         """
