@@ -1,9 +1,9 @@
 import os
 
 import json
-from easydict import EasyDict
+#from easydict import EasyDict
 
-import dirs.create_dirs as create_dirs
+from .dirs import create_dirs
 
 def get_config_from_json(json_file):
     """
