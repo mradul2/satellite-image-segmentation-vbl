@@ -1,7 +1,7 @@
 import os
 
 import json
-#from easydict import EasyDict
+from easydict import EasyDict
 
 from .dirs import create_dirs
 
