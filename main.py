@@ -10,7 +10,7 @@ Main
 import argparse
 
 from src.utils.config import process_config
-from src.agents import *
+from src.agents.agent import Agent
 
 def main():
     # parse the path of the json config file
