@@ -1,24 +1,14 @@
 import numpy as np
-
-from tqdm import tqdm
 import shutil
 
 import torch
 from torch.backends import cudnn
 from torch.autograd import Variable
 
-
 from losses.cross_entropy import CrossEntropyLoss
 from models.enet import ENet 
-from data_modules.dataset.cityscapes import Cityscapes
-
-
-
-from torch.optim import lr_scheduler
-
-
-from utils.metrics import AverageMeter, IOUMetric
-from utils.misc import print_cuda_statistics
+from dataloader.cityscapes import CityscapesDataLoader
+from utils.metrics import CityMetric
 
 from agents.base import BaseAgent
 
@@ -34,25 +24,23 @@ class Agent(BaseAgent):
         super().__init__(config)
 
         # define ENet model
-        self.model = ENet(self.config.model)
+        self.model = ENet(self.config)
         # Create an instance from the data loader
-        self.data_loader = VOCDataLoader(self.config.data)
+        self.dataloader = CityscapesDataLoader(self.config)
         # Create instance from the loss
         self.loss = CrossEntropyLoss(self.config)
         # Create instance from the optimizer
         self.optimizer = torch.optim.Adam(self.model.parameters(),
                                           lr=self.config.learning_rate,
-                                          betas=(self.config.betas[0], self.config.betas[1]),
-                                          eps=self.config.eps,
                                           weight_decay=self.config.weight_decay)
         # Define Scheduler
-        lambda1 = lambda epoch: pow((1 - ((epoch - 1) / self.config.max_epoch)), 0.9)
-        self.scheduler = lr_scheduler.LambdaLR(self.optimizer, lr_lambda=lambda1)
+        self.scheduler = torch.optim.lr_scheduler.ExponentialLR(self.optimizer,
+                                                                gamma=self.beta)
         
         # initialize my counters
         self.current_epoch = 0
         self.current_iteration = 0
-        self.best_valid_mean_iou = 0
+        self.best_valid_loss = 10
 
         # Check is cuda is available or not
         self.is_cuda = torch.cuda.is_available()
@@ -63,26 +51,16 @@ class Agent(BaseAgent):
             torch.cuda.manual_seed_all(self.config.seed)
             self.device = torch.device("cuda")
             torch.cuda.set_device(self.config.gpu_device)
-            self.logger.info("Operation will be on *****GPU-CUDA***** ")
-            print_cuda_statistics()
 
         else:
             self.device = torch.device("cpu")
             torch.manual_seed(self.config.seed)
-            self.logger.info("Operation will be on *****CPU***** ")
 
         self.model = self.model.to(self.device)
         self.loss = self.loss.to(self.device)
         # Model Loading from the latest checkpoint if not found start from scratch.
         self.load_checkpoint(self.config.checkpoint_file)
 
-        # Tensorboard Writer
-        self.summary_writer = SummaryWriter(log_dir=self.config.summary_dir, comment='FCN8s')
-
-        # # scheduler for the optimizer
-        # self.scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(self.optimizer,
-        #                                                             'min', patience=self.config.learning_rate_patience,
-        #                                                             min_lr=1e-10, verbose=True)
 
     def save_checkpoint(self, filename='checkpoint.pth.tar', is_best=0):
         """
@@ -115,18 +93,13 @@ class Agent(BaseAgent):
             self.model.load_state_dict(checkpoint['state_dict'])
             self.optimizer.load_state_dict(checkpoint['optimizer'])
 
-            self.logger.info("Checkpoint loaded successfully from '{}' at (epoch {}) at (iteration {})\n"
-                  .format(self.config.checkpoint_dir, checkpoint['epoch'], checkpoint['iteration']))
-        except OSError as e:
-            self.logger.info("No checkpoint exists from '{}'. Skipping...".format(self.config.checkpoint_dir))
-            self.logger.info("**First time to train**")
 
     def run(self):
         """
         This function will the operator
         :return:
         """
-        assert self.config.mode in ['train', 'test', 'random']
+        assert self.config.mode in ['train', 'test']
         try:
             if self.config.mode == 'test':
                 self.test()
@@ -134,7 +107,7 @@ class Agent(BaseAgent):
                 self.train()
 
         except KeyboardInterrupt:
-            self.logger.info("You have entered CTRL+C.. Wait to finalize")
+            print("You have entered CTRL+C.. Wait to finalize")
 
     def train(self):
         """
@@ -143,13 +116,12 @@ class Agent(BaseAgent):
 
         for epoch in range(self.current_epoch, self.config.max_epoch):
             self.current_epoch = epoch
-            self.scheduler.step(epoch)
             self.train_one_epoch()
+            self.scheduler.step()
+            
+            valid_loss = self.validate()
 
-            valid_mean_iou, valid_loss = self.validate()
-            self.scheduler.step(valid_loss)
-
-            is_best = valid_mean_iou > self.best_valid_mean_iou
+            is_best = valid_loss > self.best_valid_loss
             if is_best:
                 self.best_valid_mean_iou = valid_mean_iou
 
@@ -166,85 +138,51 @@ class Agent(BaseAgent):
         # Set the model to be in training mode (for batchnorm)
         self.model.train()
         # Initialize your average meters
-        epoch_loss = AverageMeter()
-        metrics = IOUMetric(self.config.num_classes)
+        train_loss = 0.0
 
-        for x, y in tqdm_batch:
-            if self.cuda:
-                x, y = x.pin_memory().cuda(async=self.config.async_loading), y.cuda(async=self.config.async_loading)
-            x, y = Variable(x), Variable(y)
-            # model
-            pred = self.model(x)
-            # loss
-            cur_loss = self.loss(pred, y)
-            if np.isnan(float(cur_loss.item())):
-                raise ValueError('Loss is nan during training...')
+        for batch in self.dataloader.train_loader:
 
-            # optimizer
+            inputs = batch[0].float().to(self.device)
+            labels = batch[1].float().to(self.device).long()
+
+            outputs = self.model(inputs)
+
+            loss = self.loss(outputs, labels)
+
             self.optimizer.zero_grad()
-            cur_loss.backward()
+            self.loss.backward()
             self.optimizer.step()
 
-            epoch_loss.update(cur_loss.item())
-            _, pred_max = torch.max(pred, 1)
-            metrics.add_batch(pred_max.data.cpu().numpy(), y.data.cpu().numpy())
+            train_loss += loss.item()
 
-            self.current_iteration += 1
-            # exit(0)
+        train_loss /= len(self.dataloader.train_loader)
+        print("Training Results at epoch-" + str(self.current_epoch) + " | " + "loss: " + str(train_loss))
 
-        epoch_acc, _, epoch_iou_class, epoch_mean_iou, _ = metrics.evaluate()
-        self.summary_writer.add_scalar("epoch-training/loss", epoch_loss.val, self.current_iteration)
-        self.summary_writer.add_scalar("epoch_training/mean_iou", epoch_mean_iou, self.current_iteration)
-        tqdm_batch.close()
-
-        print("Training Results at epoch-" + str(self.current_epoch) + " | " + "loss: " + str(
-            epoch_loss.val) + " - acc-: " + str(
-            epoch_acc) + "- mean_iou: " + str(epoch_mean_iou) + "\n iou per class: \n" + str(
-            epoch_iou_class))
 
     def validate(self):
         """
         One epoch validation
         :return:
         """
-        tqdm_batch = tqdm(self.data_loader.valid_loader, total=self.data_loader.valid_iterations,
-                          desc="Valiation at -{}-".format(self.current_epoch))
-
         # set the model in training mode
         self.model.eval()
+        valid_loss = 0.0
 
-        epoch_loss = AverageMeter()
-        metrics = IOUMetric(self.config.num_classes)
+        for batch in val_loader:
+            
+            inputs = batch[0].float().to(device)
+            labels = batch[1].float().to(device).long()
 
-        for x, y in tqdm_batch:
-            if self.cuda:
-                x, y = x.pin_memory().cuda(async=self.config.async_loading), y.cuda(async=self.config.async_loading)
-            x, y = Variable(x), Variable(y)
-            # model
-            pred = self.model(x)
-            # loss
-            cur_loss = self.loss(pred, y)
+            outputs = model(inputs)
+            
+            loss = criterion(outputs, labels)
+            
+            val_loss += loss.item()
 
-            if np.isnan(float(cur_loss.item())):
-                raise ValueError('Loss is nan during Validation.')
+        valid_loss /= len(self.dataloader.val_loader)
+        print("Validation Results at epoch-" + str(self.current_epoch) + " | " + "loss: " + str(valid_loss))
 
-            _, pred_max = torch.max(pred, 1)
-            metrics.add_batch(pred_max.data.cpu().numpy(), y.data.cpu().numpy())
-
-            epoch_loss.update(cur_loss.item())
-
-        epoch_acc, _, epoch_iou_class, epoch_mean_iou, _ = metrics.evaluate()
-        self.summary_writer.add_scalar("epoch_validation/loss", epoch_loss.val, self.current_iteration)
-        self.summary_writer.add_scalar("epoch_validation/mean_iou", epoch_mean_iou, self.current_iteration)
-
-        print("Validation Results at epoch-" + str(self.current_epoch) + " | " + "loss: " + str(
-            epoch_loss.val) + " - acc-: " + str(
-            epoch_acc) + "- mean_iou: " + str(epoch_mean_iou) + "\n iou per class: \n" + str(
-            epoch_iou_class))
-
-        tqdm_batch.close()
-
-        return epoch_mean_iou, epoch_loss.val
+        return valid_loss
 
     def test(self):
         # TODO
@@ -257,6 +195,4 @@ class Agent(BaseAgent):
         """
         print("Please wait while finalizing the operation.. Thank you")
         self.save_checkpoint()
-        self.summary_writer.export_scalars_to_json("{}all_scalars.json".format(self.config.summary_dir))
-        self.summary_writer.close()
         self.data_loader.finalize()
