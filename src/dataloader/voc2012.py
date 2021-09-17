@@ -14,7 +14,7 @@ import utils.voc_utils as extended_transforms
 from utils.voc_utils import make_dataset
 
 
-class VOC(data.Dataset):
+class Cityscapes(data.Dataset):
     def __init__(self, mode, data_root, joint_transform=None, sliding_crop=None, transform=None, target_transform=None):
         self.imgs = make_dataset(mode, data_root)
         if len(self.imgs) == 0:

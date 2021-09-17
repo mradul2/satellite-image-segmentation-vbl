@@ -9,11 +9,11 @@ Main
 """
 
 import hydra
-@hydra.main(config_path="conf", config_name="config")
+from omegaconf import DictConfig
 
-def main():
-    
-    print(exp_name)
+@hydra.main(config_path="conf", config_name="config")
+def main(cfg: omegaconf.DictConfig):
+    print(cfg.exp_name)
 
 
 if __name__ == '__main__':

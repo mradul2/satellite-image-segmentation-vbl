@@ -7,14 +7,16 @@ import torch
 from torch.backends import cudnn
 from torch.autograd import Variable
 
-from graphs.models.erfnet import ERF
-from graphs.models.erfnet_imagenet import ERFNet
-from datasets.voc2012 import VOCDataLoader
-from graphs.losses.cross_entropy import CrossEntropyLoss
+
+from losses.cross_entropy import CrossEntropyLoss
+from models.enet import ENet 
+from data_modules.dataset.cityscapes import Cityscapes
+
+
 
 from torch.optim import lr_scheduler
 
-from tensorboardX import SummaryWriter
+
 from utils.metrics import AverageMeter, IOUMetric
 from utils.misc import print_cuda_statistics
 
@@ -23,25 +25,18 @@ from agents.base import BaseAgent
 cudnn.benchmark = True
 
 
-class ERFNetAgent(BaseAgent):
+class Agent(BaseAgent):
     """
     This class will be responsible for handling the whole process of our architecture.
     """
 
     def __init__(self, config):
         super().__init__(config)
-        # Create an instance from the Model
-        self.logger.info("Loading encoder pretrained in imagenet...")
-        if self.config.pretrained_encoder:
-            pretrained_enc = torch.nn.DataParallel(ERFNet(self.config.imagenet_nclasses)).cuda()
-            pretrained_enc.load_state_dict(torch.load(self.config.pretrained_model_path)['state_dict'])
-            pretrained_enc = next(pretrained_enc.children()).features.encoder
-        else:
-            pretrained_enc = None
-        # define erfNet model
-        self.model = ERF(self.config, pretrained_enc)
+
+        # define ENet model
+        self.model = ENet(self.config.model)
         # Create an instance from the data loader
-        self.data_loader = VOCDataLoader(self.config)
+        self.data_loader = VOCDataLoader(self.config.data)
         # Create instance from the loss
         self.loss = CrossEntropyLoss(self.config)
         # Create instance from the optimizer
@@ -53,6 +48,7 @@ class ERFNetAgent(BaseAgent):
         # Define Scheduler
         lambda1 = lambda epoch: pow((1 - ((epoch - 1) / self.config.max_epoch)), 0.9)
         self.scheduler = lr_scheduler.LambdaLR(self.optimizer, lr_lambda=lambda1)
+        
         # initialize my counters
         self.current_epoch = 0
         self.current_iteration = 0
