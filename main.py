@@ -7,6 +7,7 @@ Main
 -Create an agent instance
 -Run the agent
 """
+
 import argparse
 
 from src.utils.config import process_config

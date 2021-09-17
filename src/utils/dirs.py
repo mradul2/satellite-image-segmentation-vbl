@@ -1,4 +1,5 @@
 import os
+import sys
 
 def create_dirs(dirs):
     """
