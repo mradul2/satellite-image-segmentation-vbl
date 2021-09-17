@@ -35,7 +35,7 @@ class Agent(BaseAgent):
                                           weight_decay=self.config.weight_decay)
         # Define Scheduler
         self.scheduler = torch.optim.lr_scheduler.ExponentialLR(self.optimizer,
-                                                                gamma=self.beta)
+                                                                gamma=self.gamma)
         
         # initialize my counters
         self.current_epoch = 0
@@ -85,9 +85,7 @@ class Agent(BaseAgent):
     def load_checkpoint(self, filename):
         filename = self.config.checkpoint_dir + filename
         try:
-            self.logger.info("Loading checkpoint '{}'".format(filename))
             checkpoint = torch.load(filename)
-
             self.current_epoch = checkpoint['epoch']
             self.current_iteration = checkpoint['iteration']
             self.model.load_state_dict(checkpoint['state_dict'])
@@ -131,9 +129,6 @@ class Agent(BaseAgent):
         """
         One epoch training function
         """
-        # Initialize tqdm
-        tqdm_batch = tqdm(self.data_loader.train_loader, total=self.data_loader.train_iterations,
-                          desc="Epoch-{}-".format(self.current_epoch))
 
         # Set the model to be in training mode (for batchnorm)
         self.model.train()
