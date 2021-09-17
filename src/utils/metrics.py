@@ -11,6 +11,7 @@ class CityMetric:
 
     def __init__(self, num_classes):
         self.num_classes = num_classes
+        self.SMOOTH = 1e-6
 
     def evaluate(self, outputs, labels):
         accu = np.zeros((num_classes,), dtype=float)
@@ -31,7 +32,7 @@ class CityMetric:
             union = (output_mask | label_mask).sum((1, 2))
             total = label_mask.sum((1, 2))
 
-            iou[x] = ((intersection + SMOOTH) / (union + SMOOTH)).mean()
-            accu[x] = ((intersection + SMOOTH) / (total + SMOOTH)).mean()
+            iou[x] = ((intersection + self.SMOOTH) / (union + self.SMOOTH)).mean()
+            accu[x] = ((intersection + self.SMOOTH) / (total + self.SMOOTH)).mean()
 
         return iou, accu

@@ -12,8 +12,6 @@ from utils.metrics import CityMetric
 
 from agents.base import BaseAgent
 
-cudnn.benchmark = True
-
 
 class Agent(BaseAgent):
     """
@@ -183,8 +181,34 @@ class Agent(BaseAgent):
         return valid_loss
 
     def test(self):
-        # TODO
-        pass
+        self.model.eval()
+            
+        val_accuracy = np.zeros((num_classes,), dtype=float)
+        val_iou = np.zeros((num_classes,), dtype=float)
+
+        val_results = []
+            
+        for batch in self.dataloader:
+            
+            inputs = batch[0].float().to(device)
+            labels = batch[1].float().to(device).long()
+
+            outputs = self.model(inputs)
+
+            metric = CityMetric(self.num_classes)
+            np_outputs, iou, accu = metric.evaluate(outputs, labels)
+            
+        val_accuracy += accu
+        val_iou += iou
+        val_results.append(np_outputs)
+            
+        val_accuracy /= len(val_DataLoader)
+        val_iou /= len(val_DataLoader)
+
+        val_results = np.array(val_results)
+
+        return train_accuracy, val_accuracy, train_iou, val_iou, val_results
+
 
     def finalize(self):
         """
