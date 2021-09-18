@@ -4,6 +4,7 @@ July 2017
 Adapted from: https://github.com/Eromera/erfnet_pytorch/blob/master/train/erfnet.py
 """
 import torch.nn as nn
+import torch
 
 class InitialBlock(nn.Module):
     """The initial block is composed of two branches:
