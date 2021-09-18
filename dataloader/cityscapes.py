@@ -13,7 +13,7 @@ class CityScapes(Dataset):
         self.data_path = image_path
         self.label_path = label_path
 
-        self.data = np.load(data_path)
+        self.data = np.load(image_path)
         self.label = np.load(label_path)
 
         self.label = np.array([self.encode(mask) for mask in self.label])
