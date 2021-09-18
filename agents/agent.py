@@ -33,7 +33,7 @@ class Agent(BaseAgent):
                                           weight_decay=self.config.weight_decay)
         # Define Scheduler
         self.scheduler = torch.optim.lr_scheduler.ExponentialLR(self.optimizer,
-                                                                gamma=self.gamma)
+                                                                gamma=self.config.gamma)
         
         # initialize my counters
         self.current_epoch = 0
