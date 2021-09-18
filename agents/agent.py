@@ -24,7 +24,7 @@ class Agent(BaseAgent):
         # define ENet model
         self.model = ENet(self.config)
         # Create an instance from the data loader
-        self.dataloader = CityscapesDataLoader(self.config)
+        self.dataloader = CityScapesDataLoader(self.config)
         # Create instance from the loss
         self.loss = CrossEntropyLoss(self.config)
         # Create instance from the optimizer
