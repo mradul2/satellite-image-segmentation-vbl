@@ -18,10 +18,14 @@ class CityScapes(Dataset):
         self.beta = beta
         self.prob = prob
 
-        self.data = np.load(data_path)
-        self.label = np.load(label_path)
+        try:
+            print("Loading Data and Labels from the numpy files.....")
+            self.data = np.load(data_path)
+            self.label = np.load(label_path)
 
-        self.label = np.array([self.encode(mask) for mask in self.label])
+            self.label = np.array([self.encode(mask) for mask in self.label])
+        except:
+            print("Numpy files not found")
 
         self.transform = transforms
 
