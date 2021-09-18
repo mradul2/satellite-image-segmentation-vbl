@@ -15,7 +15,6 @@ class CrossEntropyLoss(nn.Module):
         if config == None:
             self.loss = nn.CrossEntropyLoss()
         else:
-            class_weights = np.load(config.class_weights)
             self.loss = nn.CrossEntropyLoss(ignore_index=config.ignore_index,
                                             size_average=True, 
                                             reduce=True)
