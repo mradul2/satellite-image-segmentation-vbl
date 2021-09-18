@@ -22,5 +22,7 @@
   "train_y": "/kaggle/input/cityscape-data/train_y.npy",
   "val_X": "/kaggle/input/cityscape-data/val_X.npy",
   "val_y": "/kaggle/input/cityscape-data/val_y.npy",
-  "max_epoch": 300
+  "max_epoch": 300,
+  "encoder_relu": false,
+  "decoder_relu": true,
 }
