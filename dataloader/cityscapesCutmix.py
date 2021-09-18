@@ -54,7 +54,7 @@ class CityScapes(Dataset):
     def __len__(self):
         return len(self.data)
 
-    def encode(mask):
+    def encode(self, mask):
         res = np.zeros_like(mask)
         for label in CityLabels:
             res[mask == label.id] = label.trainId
