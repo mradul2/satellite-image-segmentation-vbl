@@ -24,5 +24,5 @@
   "max_epoch": 50,
   "encoder_relu": false,
   "decoder_relu": true,
-  "valid_split": 0.2,
+  "valid_split": 0.2
 }
