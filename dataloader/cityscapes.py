@@ -58,7 +58,7 @@ class CityScapesDataLoader:
                             self.config.train_y, 
                             transform=self.transform)
             valid_set = CityScapes(self.config.val_X,
-                            self.config.val_y
+                            self.config.val_y,
                             transform=self.transform)
 
             self.train_loader = DataLoader(train_set, batch_size=self.config.batch_size, shuffle=True)
