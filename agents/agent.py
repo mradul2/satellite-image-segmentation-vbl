@@ -5,7 +5,7 @@ import torch
 from torch.backends import cudnn
 from torch.autograd import Variable
 
-from losses.crossentropy import CrossEntropyLoss
+# from losses.crossentropy import CrossEntropyLoss
 from models.enet import ENet 
 from dataloader.cityscapes import CityScapesDataLoader
 from utils.metrics import CityMetric
