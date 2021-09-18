@@ -5,8 +5,8 @@
   "cuda": true,
   "gpu_device": 0,
   "seed": 1337,
-  "num_classes": 19,
-  "ignore_index": 19,
+  "num_classes": 5,
+  "ignore_index": -100,
   "pretrained_model_path": "./pretrained_weights/erfnet_encoder_pretrained.pth.tar",
   "learning_rate": 0.0005,
   "gamma": 0.98,
@@ -20,9 +20,9 @@
   "data_loader_workers": 4,
   "pin_memory": true,
   "async_loading": true,
-  "images": "/kaggle/input/visionbeyondlimit/VisionBeyondLimits/Images/",
-  "labels": "/kaggle/input/visionbeyondlimit/VisionBeyondLimits/Labels/",
+  "data_root": "/kaggle/input/visionbeyondlimit/VisionBeyondLimits/",
   "max_epoch": 25,
   "encoder_relu": false,
-  "decoder_relu": true
+  "decoder_relu": true,
+  "valid_split": 0.2,
 }
