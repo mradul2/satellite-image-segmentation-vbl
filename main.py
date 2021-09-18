@@ -9,7 +9,7 @@ Main
 import argparse
 
 from utils.config import process_config
-from agents import *
+from agents import vbl
 
 def main():
     # parse the path of the json config file
