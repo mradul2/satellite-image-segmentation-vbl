@@ -13,10 +13,14 @@ class CityScapes(Dataset):
         self.data_path = image_path
         self.label_path = label_path
 
-        self.data = np.load(image_path)
-        self.label = np.load(label_path)
+        try:
+            print("Loading Data and Labels from Numpy files...")
+            self.data = np.load(image_path)
+            self.label = np.load(label_path)
 
-        self.label = np.array([self.encode(mask) for mask in self.label])
+            self.label = np.array([self.encode(mask) for mask in self.label])
+        except:
+            print("Loading unsuccessfull!")
 
         self.transform = transforms
 
@@ -32,7 +36,7 @@ class CityScapes(Dataset):
     def __len__(self):
         return len(self.data)
 
-    def encode(mask):
+    def encode(self, mask):
         res = np.zeros_like(mask)
         for label in CityLabels:
             res[mask == label.id] = label.trainId
