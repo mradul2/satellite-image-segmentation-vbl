@@ -7,7 +7,7 @@ from torch.autograd import Variable
 
 from losses.cross_entropy import CrossEntropyLoss
 from models.enet import ENet 
-from dataloader.cityscapes import CityscapesDataLoader
+from dataloader.cityscapes import CityScapesDataLoader
 from utils.metrics import CityMetric
 
 from agents.base import BaseAgent
