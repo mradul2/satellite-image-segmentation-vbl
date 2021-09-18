@@ -61,18 +61,19 @@ class CityScapesDataLoader:
                             self.config.val_y,
                             transform=self.transform)
 
-            self.train_loader = DataLoader(train_set, batch_size=self.config.batch_size, shuffle=True)
-            self.valid_loader = DataLoader(valid_set, batch_size=self.config.batch_size, shuffle=False)
+            self.train_loader = DataLoader(train_set, batch_size=self.config.train_batch_size, shuffle=True)
+            self.valid_loader = DataLoader(valid_set, batch_size=self.config.valid_batch_size, shuffle=False)
 
-            self.train_iterations = (len(train_set) + self.config.batch_size) // self.config.batch_size
-            self.valid_iterations = (len(valid_set) + self.config.batch_size) // self.config.batch_size
+            self.train_iterations = (len(train_set) + self.config.train_batch_size) // self.config.train_batch_size
+            self.valid_iterations = (len(valid_set) + self.config.valid_batch_size) // self.config.valid_batch_size
 
         elif self.config.mode == 'test':
-            test_set = CityScapes(self.config.data_root,
-                           transform=self.transform)
+            test_set = CityScapes(self.config.val_X,
+                            self.config.val_y,
+                            transform=self.transform)
 
-            self.test_loader = DataLoader(test_set, batch_size=self.config.batch_size, shuffle=False)
-            self.test_iterations = (len(test_set) + self.config.batch_size) // self.config.batch_size
+            self.test_loader = DataLoader(test_set, batch_size=self.config.test_batch_size, shuffle=False)
+            self.test_iterations = (len(test_set) + self.config.test_batch_size) // self.config.test_batch_size
 
         else:
             raise Exception('Please choose a proper mode for data loading')
