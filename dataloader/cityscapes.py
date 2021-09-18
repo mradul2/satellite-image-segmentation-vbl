@@ -56,10 +56,10 @@ class CityScapesDataLoader:
         if self.config.mode == 'train':
             train_set = CityScapes(self.config.train_X,
                             self.config.train_y, 
-                            transform=self.transform)
+                            transforms=self.transform)
             valid_set = CityScapes(self.config.val_X,
                             self.config.val_y,
-                            transform=self.transform)
+                            transforms=self.transform)
 
             self.train_loader = DataLoader(train_set, batch_size=self.config.train_batch_size, shuffle=True)
             self.valid_loader = DataLoader(valid_set, batch_size=self.config.valid_batch_size, shuffle=False)
@@ -70,7 +70,7 @@ class CityScapesDataLoader:
         elif self.config.mode == 'test':
             test_set = CityScapes(self.config.val_X,
                             self.config.val_y,
-                            transform=self.transform)
+                            transforms=self.transform)
 
             self.test_loader = DataLoader(test_set, batch_size=self.config.test_batch_size, shuffle=False)
             self.test_iterations = (len(test_set) + self.config.test_batch_size) // self.config.test_batch_size
