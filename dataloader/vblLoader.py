@@ -74,18 +74,15 @@ class VBLDataLoader:
                             transforms=self.transform)
 
             print("Loading Data into DataLoaders...")
-            try:
-                train_sampler, valid_sampler = datasetSplitter(dataset, self.valid_split, self.shuffle_dataset)
 
-                self.train_loader = DataLoader(dataset, batch_size=self.config.train_batch_size, shuffle=True, sampler=train_sampler)
-                self.valid_loader = DataLoader(dataset, batch_size=self.config.valid_batch_size, shuffle=False, sampler=valid_sampler)
+            train_sampler, valid_sampler = datasetSplitter(dataset, self.valid_split, self.shuffle_dataset)
 
-                self.train_iterations = (len(dataset * self.train_split) + self.config.train_batch_size) // self.config.train_batch_size
-                self.valid_iterations = (len(dataset * self.valid_split) + self.config.valid_batch_size) // self.config.valid_batch_size
-                print("Loading Sucessfull")
+            self.train_loader = DataLoader(dataset, batch_size=self.config.train_batch_size, shuffle=True, sampler=train_sampler)
+            self.valid_loader = DataLoader(dataset, batch_size=self.config.valid_batch_size, shuffle=False, sampler=valid_sampler)
 
-            except: 
-                print("Loading Unsucessfull")
+            self.train_iterations = (len(dataset * self.train_split) + self.config.train_batch_size) // self.config.train_batch_size
+            self.valid_iterations = (len(dataset * self.valid_split) + self.config.valid_batch_size) // self.config.valid_batch_size
+
 
         elif self.config.mode == 'test':
             print("---Testing Mode---")
