@@ -169,12 +169,12 @@ class VBLAgent(BaseAgent):
 
         for batch in self.dataloader.train_loader:
             
-            inputs = batch[0].float().to(device)
-            labels = batch[1].float().to(device).long()
+            inputs = batch[0].float().to(self.device)
+            labels = batch[1].float().to(self.device).long()
 
-            outputs = model(inputs)
+            outputs = self.model(inputs)
             
-            loss = criterion(outputs, labels)
+            loss = self.loss(outputs, labels)
             
             val_loss += loss.item()
 
