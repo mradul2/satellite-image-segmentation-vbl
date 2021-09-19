@@ -12,7 +12,7 @@
   "gamma": 0.98,
   "momentum": 0.98,
   "weight_decay": 0.0002,
-  "train_batch_size": 5,
+  "train_batch_size": 3,
   "valid_batch_size": 1,
   "test_batch_size": 1,
   "checkpoint_file": "checkpoint.pth.tar",
@@ -21,7 +21,7 @@
   "pin_memory": true,
   "async_loading": true,
   "data_root": "/kaggle/input/visionbeyondlimit/VisionBeyondLimits/",
-  "max_epoch": 50,
+  "max_epoch": 20,
   "encoder_relu": false,
   "decoder_relu": true,
   "valid_split": 0.2
