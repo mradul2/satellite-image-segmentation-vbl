@@ -6,6 +6,7 @@ from cv2 import fillPoly
 import numpy as np
 from shapely.geometry import mapping
 
+from shapely import wkt
 
 
 def generate_localization_polygon(json_path):
