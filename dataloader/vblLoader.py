@@ -28,14 +28,14 @@ class VBL(Dataset):
         for lblPath in sorted(glob.glob(self.label_path + "*.png")):
             self.label_list.append(lblPath)
 
-        print("Total Images loaded: ", len(image_list))
-        print("Total Labels loaded: ", len(label_list))
+        print("Total Images loaded: ", len(self.image_list))
+        print("Total Labels loaded: ", len(self.label_list))
 
         self.transform = transforms
 
     def __getitem__(self, index):
-        imagePath = self.data[index]
-        labelPath = self.label[index]
+        imagePath = self.image_list[index]
+        labelPath = self.label_list[index]
 
         image = cv2.imread(imagePath)
         label = generate_damage_polygon(labelPath)
