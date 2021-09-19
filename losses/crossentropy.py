@@ -15,9 +15,7 @@ class CrossEntropyLoss(nn.Module):
         if config == None:
             self.loss = nn.CrossEntropyLoss()
         else:
-            self.loss = nn.CrossEntropyLoss(ignore_index=config.ignore_index,
-                                            size_average=True, 
-                                            reduce=True)
+            self.loss = nn.CrossEntropyLoss(ignore_index=config.ignore_index)
 
     def forward(self, inputs, targets):
         return self.loss(inputs, targets)
