@@ -149,7 +149,7 @@ class VBLAgent(BaseAgent):
             loss = self.loss(outputs, labels)
 
             self.optimizer.zero_grad()
-            self.loss.backward()
+            loss.backward()
             self.optimizer.step()
 
             train_loss += loss.item()
