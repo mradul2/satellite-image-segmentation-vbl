@@ -35,7 +35,7 @@ def generate_damage_polygon(json_path):
         "minor-damage": 2,
         "major-damage": 3,
         "destroyed": 4,
-        "un-classified": 5
+        "un-classified": 0
     }
     for feat in annotations['features']['xy']:
         feat_shape = wkt.loads(feat['wkt'])
