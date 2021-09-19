@@ -84,8 +84,8 @@ class VBLDataLoader:
             print("Length of Train Loader: ", len(self.train_loader))
             print("Length of Valid Loader: ", len(self.valid_loader))
 
-            self.train_iterations = (len(dataset) * self.train_split)) + self.config.train_batch_size) // self.config.train_batch_size
-            self.valid_iterations = (len(dataset) * self.valid_split)) + self.config.valid_batch_size) // self.config.valid_batch_size
+            self.train_iterations = (len(dataset) * self.train_split) // self.config.train_batch_size + 1
+            self.valid_iterations = (len(dataset) * self.valid_split) // self.config.valid_batch_size + 1
 
 
         elif self.config.mode == 'test':
