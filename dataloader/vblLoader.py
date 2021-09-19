@@ -58,7 +58,8 @@ class VBLDataLoader:
         self.valid_split = self.config.valid_split
         self.train_split = 1 - self.valid_split
 
-        self.shuffle_dataset = True
+        self.shuffle_dataset = False
+        # Some shuffle related error: https://stackoverflow.com/questions/61033726/valueerror-sampler-option-is-mutually-exclusive-with-shuffle-pytorch
 
         self.transform = transforms.Compose([
           transforms.ToTensor(),
