@@ -25,7 +25,7 @@ class VBL(Dataset):
         for imgPath in sorted(glob.glob(self.image_path + "*.png")):
             self.image_list.append(imgPath)
 
-        for lblPath in sorted(glob.glob(self.label_path + "*.png")):
+        for lblPath in sorted(glob.glob(self.label_path + "*.json")):
             self.label_list.append(lblPath)
 
         print("Total Images loaded: ", len(self.image_list))
@@ -100,15 +100,3 @@ class VBLDataLoader:
 
     def finalize(self):
         print("DataLoader Finalized")
-
-        if self.config.mode == 'train':
-            print("Length of Train Dataloader: ", len(self.train_loader))
-            print("Length of Valid Dataloader: ", len(self.valid_loader))
-
-            
-
-        elif self.config.mode == 'test':
-            print("Length of Test Dataloader: ", len(self.test_loader))
-
-        else:
-            print("Invalid Mode of Run was provided")
