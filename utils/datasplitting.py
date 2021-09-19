@@ -4,7 +4,7 @@ from torch.utils.data.sampler import SubsetRandomSampler
 
 def datasetSplitter(dataset, validation_split, shuffle):
 	random_seed= 42
-	dataset_size = len(self.dataset)
+	dataset_size = len(dataset)
 
 	indices = list(range(dataset_size))
 	split = int(np.floor(validation_split * dataset_size))
