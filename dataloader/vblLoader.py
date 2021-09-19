@@ -23,10 +23,10 @@ class VBL(Dataset):
 
         print("Appending Images and Labels to the List...")
         for imgPath in sorted(glob.glob(self.image_path + "*.png")):
-            image_list.append(imgPath)
+            self.image_list.append(imgPath)
 
         for lblPath in sorted(glob.glob(self.label_path + "*.png")):
-            label_list.append(lblPath)
+            self.label_list.append(lblPath)
 
         print("Total Images loaded: ", len(image_list))
         print("Total Labels loaded: ", len(label_list))
