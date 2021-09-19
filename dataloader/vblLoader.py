@@ -78,7 +78,7 @@ class VBLDataLoader:
 
             train_sampler, valid_sampler = datasetSplitter(dataset, self.valid_split, self.shuffle_dataset)
 
-            self.train_loader = DataLoader(dataset, batch_size=self.config.train_batch_size, shuffle=True, sampler=train_sampler)
+            self.train_loader = DataLoader(dataset, batch_size=self.config.train_batch_size, shuffle=False, sampler=train_sampler)
             self.valid_loader = DataLoader(dataset, batch_size=self.config.valid_batch_size, shuffle=False, sampler=valid_sampler)
 
             print("Length of Train Loader: ", len(self.train_loader))
