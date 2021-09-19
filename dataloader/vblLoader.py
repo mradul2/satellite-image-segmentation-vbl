@@ -9,6 +9,8 @@ import torchvision.transforms as transforms
 from utils.xview import generate_localization_polygon, generate_damage_polygon
 from utils.datasplitting import datasetSplitter
 
+import glob
+
 class VBL(Dataset):
     def __init__(self, data_root, transforms):
         self.data_root = data_root
