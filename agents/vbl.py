@@ -167,7 +167,7 @@ class VBLAgent(BaseAgent):
         self.model.eval()
         valid_loss = 0.0
 
-        for batch in val_loader:
+        for batch in self.val_loader:
             
             inputs = batch[0].float().to(device)
             labels = batch[1].float().to(device).long()
