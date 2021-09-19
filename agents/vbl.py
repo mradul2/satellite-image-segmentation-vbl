@@ -13,7 +13,7 @@ from agents.base import BaseAgent
 
 from utils.metrics import IoUAccuracy
 
-class Agent(BaseAgent):
+class VBLAgent(BaseAgent):
     """
     This class will be responsible for handling the whole process of our architecture.
     """

@@ -1,6 +1,6 @@
 {
   "exp_name": "ENet_Vanilla",
-  "agent": "vbl",
+  "agent": "VBLAgent",
   "mode": "train",
   "cuda": true,
   "gpu_device": 0,
