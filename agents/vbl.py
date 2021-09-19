@@ -176,7 +176,7 @@ class VBLAgent(BaseAgent):
             
             loss = self.loss(outputs, labels)
             
-            val_loss += loss.item()
+            valid_loss += loss.item()
 
         valid_loss /= len(self.dataloader.val_loader)
         print("Validation Results at epoch-" + str(self.current_epoch) + " | " + "loss: " + str(valid_loss))
