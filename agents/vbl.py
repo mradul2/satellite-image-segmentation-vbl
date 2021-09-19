@@ -25,7 +25,6 @@ class VBLAgent(BaseAgent):
         self.model = ENet(self.config)
         # Create an instance from the data loader
         self.dataloader = VBLDataLoader(self.config)
-        self.dataloader.finalize()
         # Create instance from the loss
         self.loss = CrossEntropyLoss(self.config)
         # Create instance from the optimizer
@@ -223,4 +222,4 @@ class VBLAgent(BaseAgent):
         """
         print("Please wait while finalizing the operation.. Thank you")
         self.save_checkpoint()
-        self.data_loader.finalize()
+        self.dataloader.finalize()
