@@ -71,7 +71,7 @@ class VBLAgent(BaseAgent):
                 print("WandB Run: ", self.config.experiment)
             
             except:
-                print("WandB initialization unsuccessfull!")
+                raise ValueError('WandB initialization unsuccessfull!')
 
 
     def save_checkpoint(self, filename='checkpoint.pth.tar', is_best=0):
