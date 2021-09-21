@@ -25,7 +25,7 @@ class IoUAccuracy:
 
         np_outputs[np_labels == self.config.ignore_index] = self.config.ignore_index
 
-        for x in range(num_classes):
+        for x in range(self.config.num_classes):
             output_mask = (np_outputs == x)
             label_mask = (np_labels == x)
         
