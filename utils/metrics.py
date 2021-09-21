@@ -10,19 +10,20 @@ class IoUAccuracy:
     """
 
     def __init__(self, config=None):
+        self.config = config
         self.num_classes = config.num_classes
         self.SMOOTH = 1e-6
 
     def evaluate(self, outputs, labels):
-        accu = np.zeros((self.num_classes,), dtype=float)
-        iou = np.zeros((self.num_classes,), dtype=float)
+        accu = np.zeros((self.config.num_classes,), dtype=float)
+        iou = np.zeros((self.config.num_classes,), dtype=float)
 
         output_cvt = torch.argmax(outputs, dim=1)
 
         np_outputs = output_cvt.cpu().detach().numpy()
         np_labels = labels.cpu().detach().numpy()
 
-        np_outputs[np_labels == config.ignore_index] = config.ignore_index
+        np_outputs[np_labels == self.config.ignore_index] = self.config.ignore_index
 
         for x in range(num_classes):
             output_mask = (np_outputs == x)

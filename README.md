@@ -46,5 +46,5 @@
 ## Usage
 
 ```bash
-python3 vbl/main.py [-h] [--mode MODE] vbl/config/file.json 
+python3 vbl/main.py [-h] [--mode MODE] [--wandb_id "WANDB_API_KEY"] vbl/config/file.json 
 ```
