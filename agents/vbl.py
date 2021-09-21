@@ -293,7 +293,7 @@ class VBLAgent(BaseAgent):
         self.save_checkpoint()
         self.dataloader.finalize()
 
-        if config.wandb:
+        if self.config.wandb:
             print("Logging final metrics in WandB...")
             self.final_summary()
             print("Saving Model in WandB...")
