@@ -72,12 +72,12 @@ class VBLDataLoader:
 
         if self.config.mode == 'train':
             print("---Training Mode---")
-            dataset = VBL(self.config.data_root,
+            self.dataset = VBL(self.config.data_root,
                             transforms=self.transform)
 
             print("Loading Data into DataLoaders...")
 
-            train_sampler, valid_sampler = datasetSplitter(dataset, self.valid_split, self.shuffle_dataset)
+            train_sampler, valid_sampler = datasetSplitter(self.dataset, self.valid_split, self.shuffle_dataset)
 
             self.train_loader = DataLoader(dataset, batch_size=self.config.train_batch_size, shuffle=False, sampler=train_sampler)
             self.valid_loader = DataLoader(dataset, batch_size=self.config.valid_batch_size, shuffle=False, sampler=valid_sampler)
