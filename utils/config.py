@@ -3,8 +3,6 @@ import os
 import json
 from easydict import EasyDict
 
-from utils.dirs import create_dirs
-
 def get_config_from_json(json_file):
     """
     Get the config from a json file
@@ -45,12 +43,5 @@ def process_config(json_file):
     except AttributeError:
         print("ERROR!!..Please provide the exp_name in json file..")
         exit(-1)
-
-    # create some important directories to be used for that experiment.
-    config.summary_dir = os.path.join("experiments", config.exp_name, "summaries/")
-    config.checkpoint_dir = os.path.join("experiments", config.exp_name, "checkpoints/")
-    config.out_dir = os.path.join("experiments", config.exp_name, "out/")
-    config.log_dir = os.path.join("experiments", config.exp_name, "logs/")
-    create_dirs([config.summary_dir, config.checkpoint_dir, config.out_dir, config.log_dir])
 
     return config
