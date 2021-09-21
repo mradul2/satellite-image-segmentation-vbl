@@ -62,15 +62,16 @@ class VBLAgent(BaseAgent):
         self.load_checkpoint(self.config.checkpoint_file)
 
         # Initializing WandB
-        print("Initializing WandB Run...")
-        try: 
-            init_wandb(self.model, self.config)
-            print("WandB initialized successfully")
-            print("WandB Project: ", self.config.wandb_project)
-            print("WandB Run: ", self.config.experiment)
-        
-        except:
-            print("WandB initiallization unsuccessfull!")
+        if config.wandb:
+            print("Initializing WandB Run...")
+            try: 
+                init_wandb(self.model, self.config)
+                print("WandB initialized successfully")
+                print("WandB Project: ", self.config.wandb_project)
+                print("WandB Run: ", self.config.experiment)
+            
+            except:
+                print("WandB initiallization unsuccessfull!")
 
 
     def save_checkpoint(self, filename='checkpoint.pth.tar', is_best=0):
@@ -130,10 +131,13 @@ class VBLAgent(BaseAgent):
 
         for epoch in range(self.current_epoch, self.config.max_epoch):
             self.current_epoch = epoch
-            self.train_one_epoch()
+
+            train_loss, train_accuracy, train_iou = self.train_one_epoch()            
+            valid_loss, valid_accuracy, valid_iou = self.validate()
+
+            wandb_log(train_loss, valid_loss, train_accuracy, valid_accuracy, train_iou, valid_iou, self.current_epoch)
+
             self.scheduler.step()
-            
-            valid_loss = self.validate()
 
             is_best = valid_loss > self.best_valid_loss
             if is_best:
@@ -150,6 +154,8 @@ class VBLAgent(BaseAgent):
         self.model.train()
         # Initialize your average meters
         train_loss = 0.0
+        train_accuracy = np.zeros((num_classes,), dtype=float)
+        train_iou = np.zeros((num_classes,), dtype=float)
 
         for batch in self.dataloader.train_loader:
 
@@ -157,6 +163,12 @@ class VBLAgent(BaseAgent):
             labels = batch[1].float().to(self.device).long()
 
             outputs = self.model(inputs)
+
+            metric = IoUAccuracy(self.config)
+            iou, accu = metric.evaluate(outputs, labels)
+            
+            valid_accuracy += accu
+            valid_iou += iou
 
             loss = self.loss(outputs, labels)
 
@@ -167,6 +179,11 @@ class VBLAgent(BaseAgent):
             train_loss += loss.item()
 
         train_loss /= len(self.dataloader.train_loader)
+        train_accuracy /= len(self.dataloader.train_loader)
+        train_iou /= len(self.dataloader.train_loader)
+
+        return train_loss, train_accuracy, train_iou
+
         print("Training Results at epoch-" + str(self.current_epoch) + " | " + "loss: " + str(train_loss))
 
 
@@ -177,7 +194,10 @@ class VBLAgent(BaseAgent):
         """
         # set the model in training mode
         self.model.eval()
+
         valid_loss = 0.0
+        valid_accuracy = np.zeros((num_classes,), dtype=float)
+        valid_iou = np.zeros((num_classes,), dtype=float)
 
         for batch in self.dataloader.train_loader:
             
@@ -185,49 +205,30 @@ class VBLAgent(BaseAgent):
             labels = batch[1].float().to(self.device).long()
 
             outputs = self.model(inputs)
+
+            metric = IoUAccuracy(self.config)
+            iou, accu = metric.evaluate(outputs, labels)
+            
+            valid_accuracy += accu
+            valid_iou += iou
             
             loss = self.loss(outputs, labels)
             
             valid_loss += loss.item()
 
         valid_loss /= len(self.dataloader.valid_loader)
+        valid_accuracy /= len(self.dataloader.valid_loader)
+        valid_iou /= len(self.dataloader.valid_loader)
+
+        return valid_loss, valid_accuracy, valid_iou
+
         print("Validation Results at epoch-" + str(self.current_epoch) + " | " + "loss: " + str(valid_loss))
 
-        return valid_loss
-
-    def evaluate(self):
-        self.model.eval()
-            
-        valid_accuracy = np.zeros((num_classes,), dtype=float)
-        valid_iou = np.zeros((num_classes,), dtype=float)
-
-        valid_results = []
-            
-        for batch in self.dataloader.valid_loader:
-            
-            inputs = batch[0].float().to(device)
-            labels = batch[1].float().to(device).long()
-
-            outputs = self.model(inputs)
-
-            metric = IoUAccuracy(self.config)
-            np_outputs, iou, accu = metric.evaluate(outputs, labels)
-            
-            valid_accuracy += accu
-            valid_iou += iou
-            valid_results.append(np_outputs)
-            
-        valid_accuracy /= len(val_DataLoader)
-        valid_iou /= len(val_DataLoader)
-
-        valid_results = np.array(val_results)
-
-        print("Accuracy: ", valid_accuracy)
-        print("IoU: ", valid_iou)
-
-        return valid_accuracy, valid_iou, val_results
 
     def test(self):
+        """ test the model using the provided pre trained weights 
+            
+        """
         self.model.eval()
             
         valid_accuracy = np.zeros((num_classes,), dtype=float)
@@ -259,6 +260,13 @@ class VBLAgent(BaseAgent):
 
         return valid_accuracy, valid_iou, val_results
 
+    def final_summary(self):
+        load_checkpoint(self.config.checkpoint_dir + self.config.bestpoint_file)
+        valid_loss, valid_accuracy, valid_iou = self.validate()
+        wandb_save_summary(valid_accuracy.mean(),
+                           valid_iou.mean(),
+                           valid_loss)
+
 
     def finalize(self):
         """
@@ -269,11 +277,14 @@ class VBLAgent(BaseAgent):
         self.save_checkpoint()
         self.dataloader.finalize()
 
-        print("Saving Model in WandB...")
-        try: 
-            save_model_wandb(self.config.checkpoint_dir + self.config.checkpoint_file)
-            save_model_wandb(self.config.checkpoint_dir + self.config.bestpoint_file)
-            print("Model saving sucessfull")
-        
-        except:
-            print("Model Saving unsuccessfull")
+        if config.wandb:
+            print("Logging final metrics in WandB...")
+            self.final_summary()
+            print("Saving Model in WandB...")
+            try: 
+                save_model_wandb(self.config.checkpoint_dir + self.config.checkpoint_file)
+                save_model_wandb(self.config.checkpoint_dir + self.config.bestpoint_file)
+                print("Model saving sucessfull")
+            
+            except:
+                print("Model Saving unsuccessfull")

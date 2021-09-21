@@ -23,7 +23,7 @@ def init_wandb(model, config) -> None:
     wandb.watch(model, log="all")
 
 
-def wandb_log(train_loss: float, val_loss: float, train_acc: float, val_acc: float, train_iou: float, val_iou: float, epoch: int):
+def wandb_log(train_loss, val_loss, train_acc, val_acc, train_iou, val_iou, epoch):
     """
     Logs the accuracy and loss to wandb
     Args:
@@ -33,20 +33,29 @@ def wandb_log(train_loss: float, val_loss: float, train_acc: float, val_acc: flo
         val_acc (float): Validation Accuracy
         epoch (int): Epoch Number
     """
+
     wandb.log({
-        'Training loss': train_loss,
-        'Validation loss': val_loss,
-        'Training Accuracy': train_acc,
-        'Validation Accuracy': val_acc,
-        'Training IOU': train_iou,
-        'Validation IOU': val_iou
+        'Loss/Training': train_loss,
+        'Loss/Validation': val_loss,
+        'MeanIoU/Training': train_iou.mean(),
+        'MeanIoU/Validation': val_iou.mean(),
+        'MeanAccuracy/Training': train_acc.mean(),
+        'MeanAccuracy/Validation': val_acc.mean(),
     }, step=epoch)
 
+    classes = ['un-classified', 'no-damage', 'minor-damage', 'major-damage', 'destroyed']
 
-def wandb_save_summary(train_mean_accuracy: float, 
-                       train_mean_iou: float,
-                       train_loss: float,
-                       valid_mean_accuracy: float,
+    for num in len(classes):
+        wandb.log({
+            'Accuracy/Training/'+classes[num]: train_acc[num],
+            'IoU/Training/'+classes[num]: train_iou[num],
+            'Accuracy/Validation/'+classes[num]: val_acc[num],
+            'IoU/Validation/'+classes[num]: val_iou[num],
+        }, step=epoch)
+
+
+
+def wandb_save_summary(valid_mean_accuracy: float,
                        valid_mean_iou: float,
                        valid_loss: float):
    
@@ -55,11 +64,6 @@ def wandb_save_summary(train_mean_accuracy: float,
     Args:
 
     """
-
-    wandb.run.summary["Train mean_accuracy"] = train_mean_accuracy
-    wandb.run.summary["Train mean_iou"] = train_mean_iou
-    wandb.run.summary["Train loss"] = train_loss
-
     wandb.run.summary["Valid mean_accuracy"] = valid_mean_accuracy
     wandb.run.summary["Valid mean_iou"] = valid_mean_iou
     wandb.run.summary["Valid loss"] = valid_loss
