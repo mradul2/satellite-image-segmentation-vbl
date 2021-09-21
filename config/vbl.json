@@ -21,7 +21,7 @@
   "pin_memory": true,
   "async_loading": true,
   "data_root": "/kaggle/input/visionbeyondlimit/VisionBeyondLimits/",
-  "max_epoch": 1,
+  "max_epoch": 20,
   "encoder_relu": false,
   "decoder_relu": true,
   "valid_split": 0.2,
