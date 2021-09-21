@@ -265,7 +265,7 @@ class VBLAgent(BaseAgent):
 
 
     def final_summary(self):
-        load_checkpoint(self.config.checkpoint_dir + self.config.bestpoint_file)
+        self.load_checkpoint(self.config.checkpoint_dir + self.config.bestpoint_file)
         valid_loss, valid_accuracy, valid_iou, valid_output = self.validate()
 
         valid_X = []
