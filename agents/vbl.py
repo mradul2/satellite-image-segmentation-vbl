@@ -274,7 +274,7 @@ class VBLAgent(BaseAgent):
         for batch in self.dataloader.valid_loader:
             image, label = batch
             valid_X.append(image)
-            valid_y.append(label)
+            valid_y.append(label.squeeze())
 
         wandb_save_summary(valid_accuracy.mean(),
                            valid_iou.mean(),
