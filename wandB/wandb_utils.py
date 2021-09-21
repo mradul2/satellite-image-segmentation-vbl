@@ -11,6 +11,9 @@ def init_wandb(model, config) -> None:
         model (Torch Model): Model for Training
         args (TrainOptions,optional): TrainOptions class (refer options/train_options.py). Defaults to None.
     """
+
+    wandb.login()
+
     wandb.init(
         name=config.experiment,
         project=config.wandb_project,
