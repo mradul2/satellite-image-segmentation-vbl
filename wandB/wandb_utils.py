@@ -16,7 +16,7 @@ def init_wandb(model, config) -> None:
         wandb.login()
     else:
         print("Wandb api key provided...")
-        wandb.login(config.wandb_id)
+        wandb.login(key=config.wandb_id)
 
     wandb.init(
         name=config.experiment,
