@@ -167,8 +167,8 @@ class VBLAgent(BaseAgent):
             metric = IoUAccuracy(self.config)
             iou, accu = metric.evaluate(outputs, labels)
             
-            valid_accuracy += accu
-            valid_iou += iou
+            train_accuracy += accu
+            train_iou += iou
 
             loss = self.loss(outputs, labels)
 
