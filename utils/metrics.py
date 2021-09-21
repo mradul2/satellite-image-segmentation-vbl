@@ -2,7 +2,7 @@
 This file will contain the metrics of the framework
 """
 import numpy as np
-
+import torch
 
 class IoUAccuracy:
     """
