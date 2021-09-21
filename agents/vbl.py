@@ -154,8 +154,8 @@ class VBLAgent(BaseAgent):
         self.model.train()
         # Initialize your average meters
         train_loss = 0.0
-        train_accuracy = np.zeros((self.num_classes,), dtype=float)
-        train_iou = np.zeros((self.num_classes,), dtype=float)
+        train_accuracy = np.zeros((self.config.num_classes,), dtype=float)
+        train_iou = np.zeros((self.config.num_classes,), dtype=float)
 
         for batch in self.dataloader.train_loader:
 
@@ -196,8 +196,8 @@ class VBLAgent(BaseAgent):
         self.model.eval()
 
         valid_loss = 0.0
-        valid_accuracy = np.zeros((self.num_classes,), dtype=float)
-        valid_iou = np.zeros((self.num_classes,), dtype=float)
+        valid_accuracy = np.zeros((self.config.num_classes,), dtype=float)
+        valid_iou = np.zeros((self.config.num_classes,), dtype=float)
 
         for batch in self.dataloader.train_loader:
             
