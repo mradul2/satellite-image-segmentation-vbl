@@ -91,10 +91,10 @@ def wandb_save_summary(valid_mean_accuracy: float,
             "mask_data": valid_output[i],
             "class_labels": class_labels
         },
-        "ground_truth": {
-            "mask_data": valid_y[i],
-            "class_labels": class_labels
-        }
+        # "ground_truth": {
+        #     "mask_data": valid_y[i],
+        #     "class_labels": class_labels
+        # }
         })
         wandb.log({"Validation Examples": mask_img})
 
