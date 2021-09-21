@@ -79,14 +79,14 @@ class VBLDataLoader:
 
             train_sampler, valid_sampler = datasetSplitter(self.dataset, self.valid_split, self.shuffle_dataset)
 
-            self.train_loader = DataLoader(dataset, batch_size=self.config.train_batch_size, shuffle=False, sampler=train_sampler)
-            self.valid_loader = DataLoader(dataset, batch_size=self.config.valid_batch_size, shuffle=False, sampler=valid_sampler)
+            self.train_loader = DataLoader(self.dataset, batch_size=self.config.train_batch_size, shuffle=False, sampler=train_sampler)
+            self.valid_loader = DataLoader(self.dataset, batch_size=self.config.valid_batch_size, shuffle=False, sampler=valid_sampler)
 
             print("Length of Train Loader: ", len(self.train_loader))
             print("Length of Valid Loader: ", len(self.valid_loader))
 
-            self.train_iterations = (len(dataset) * self.train_split) // self.config.train_batch_size + 1
-            self.valid_iterations = (len(dataset) * self.valid_split) // self.config.valid_batch_size + 1
+            self.train_iterations = (len(self.dataset) * self.train_split) // self.config.train_batch_size + 1
+            self.valid_iterations = (len(self.dataset) * self.valid_split) // self.config.valid_batch_size + 1
 
 
         elif self.config.mode == 'test':
