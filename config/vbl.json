@@ -26,7 +26,6 @@
   "decoder_relu": true,
   "valid_split": 0.2,
   "wandb": true,
-  "wandb_api_key": "cd9473c355e7be32b1c8d4ff16cda915c7c3a126",
   "wandb_project": "vision-beyond-limits",
   "bestpoint_file": "model_best.pth.tar"
 }
