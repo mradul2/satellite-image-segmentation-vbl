@@ -38,7 +38,7 @@ def process_config(json_file):
     # making sure that you have provided the exp_name.
     try:
         print("---------------------------------------------------------------------------")
-        print(" The experiment name is {}".format(config.experiment]))
+        print(" The experiment name is {}".format(config.experiment))
         print("---------------------------------------------------------------------------")
     except AttributeError:
         print("ERROR!!..Please provide the exp_name in json file..")
