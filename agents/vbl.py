@@ -271,7 +271,7 @@ class VBLAgent(BaseAgent):
         valid_X = []
         valid_y = []
 
-        for idx in range(self.dataloader.dataset):
+        for idx in range(len(self.dataloader.dataset)):
             image, label = self.dataloader.dataset[idx]
             valid_X.append(image)
             valid_y.append(label)
