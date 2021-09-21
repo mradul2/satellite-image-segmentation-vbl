@@ -199,7 +199,7 @@ class VBLAgent(BaseAgent):
         valid_accuracy = np.zeros((self.config.num_classes,), dtype=float)
         valid_iou = np.zeros((self.config.num_classes,), dtype=float)
 
-        for batch in self.dataloader.train_loader:
+        for batch in self.dataloader.valid_loader:
             
             inputs = batch[0].float().to(self.device)
             labels = batch[1].float().to(self.device).long()
