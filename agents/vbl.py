@@ -133,7 +133,7 @@ class VBLAgent(BaseAgent):
             self.current_epoch = epoch
 
             train_loss, train_accuracy, train_iou = self.train_one_epoch()            
-            valid_loss, valid_accuracy, valid_iou = self.validate()
+            valid_loss, valid_accuracy, valid_iou, valid_output = self.validate()
 
             wandb_log(train_loss, valid_loss, train_accuracy, valid_accuracy, train_iou, valid_iou, self.current_epoch)
 
@@ -165,7 +165,7 @@ class VBLAgent(BaseAgent):
             outputs = self.model(inputs)
 
             metric = IoUAccuracy(self.config)
-            iou, accu = metric.evaluate(outputs, labels)
+            np_output, iou, accu = metric.evaluate(outputs, labels)
             
             train_accuracy += accu
             train_iou += iou
@@ -199,6 +199,8 @@ class VBLAgent(BaseAgent):
         valid_accuracy = np.zeros((self.config.num_classes,), dtype=float)
         valid_iou = np.zeros((self.config.num_classes,), dtype=float)
 
+        valid_output = []
+
         for batch in self.dataloader.valid_loader:
             
             inputs = batch[0].float().to(self.device)
@@ -207,8 +209,9 @@ class VBLAgent(BaseAgent):
             outputs = self.model(inputs)
 
             metric = IoUAccuracy(self.config)
-            iou, accu = metric.evaluate(outputs, labels)
-            
+            np_output, iou, accu = metric.evaluate(outputs, labels)
+
+            valid_output.append(np_output)            
             valid_accuracy += accu
             valid_iou += iou
             
@@ -220,7 +223,7 @@ class VBLAgent(BaseAgent):
         valid_accuracy /= len(self.dataloader.valid_loader)
         valid_iou /= len(self.dataloader.valid_loader)
 
-        return valid_loss, valid_accuracy, valid_iou
+        return valid_loss, valid_accuracy, valid_iou, valid_output
 
         print("Validation Results at epoch-" + str(self.current_epoch) + " | " + "loss: " + str(valid_loss))
 
@@ -260,12 +263,25 @@ class VBLAgent(BaseAgent):
 
         return valid_accuracy, valid_iou, val_results
 
+
     def final_summary(self):
         load_checkpoint(self.config.checkpoint_dir + self.config.bestpoint_file)
-        valid_loss, valid_accuracy, valid_iou = self.validate()
+        valid_loss, valid_accuracy, valid_iou, valid_output = self.validate()
+
+        valid_X = []
+        valid_y = []
+
+        for batch in self.dataloader.valid_loader:
+            image, label = batch
+            valid_X.append(image)
+            valid_y.append(label)
+
         wandb_save_summary(valid_accuracy.mean(),
                            valid_iou.mean(),
-                           valid_loss)
+                           valid_loss,
+                           valid_output,
+                           valid_X,
+                           valid_y)
 
 
     def finalize(self):

@@ -62,7 +62,10 @@ def wandb_log(train_loss, val_loss, train_acc, val_acc, train_iou, val_iou, epoc
 
 def wandb_save_summary(valid_mean_accuracy: float,
                        valid_mean_iou: float,
-                       valid_loss: float):
+                       valid_loss: float,
+                       valid_output,
+                       valid_X,
+                       valid_y):
    
    
     """[summary]
@@ -73,7 +76,27 @@ def wandb_save_summary(valid_mean_accuracy: float,
     wandb.run.summary["Valid mean_iou"] = valid_mean_iou
     wandb.run.summary["Valid loss"] = valid_loss
 
-    
+    class_labels = {
+        0: 'un-classified',
+        1: 'no-damage',
+        2: 'minor-damage',
+        3: 'major-damage',
+        4: 'fence',
+        5: 'destroyed'
+    }
+
+    for i in range(len(valid_output)):
+        mask_img = wandb.Image(valid_X[i], masks={
+        "predictions": {
+            "mask_data": valid_output[i],
+            "class_labels": class_labels
+        },
+        "ground_truth": {
+            "mask_data": valid_y[i],
+            "class_labels": class_labels
+        }
+        })
+        wandb.log({"Validation Examples": mask_img})
 
     wandb.finish()
 

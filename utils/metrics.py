@@ -36,4 +36,4 @@ class IoUAccuracy:
             iou[x] = ((intersection + self.SMOOTH) / (union + self.SMOOTH)).mean()
             accu[x] = ((intersection + self.SMOOTH) / (total + self.SMOOTH)).mean()
 
-        return iou, accu
+        return np_outputs.squeeze(), iou, accu
