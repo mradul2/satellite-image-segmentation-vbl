@@ -73,6 +73,8 @@ def wandb_save_summary(valid_mean_accuracy: float,
     wandb.run.summary["Valid mean_iou"] = valid_mean_iou
     wandb.run.summary["Valid loss"] = valid_loss
 
+    wandb.finish()
+
 
 # def wandb_log_conf_matrix(y_true: list, y_pred: list):
 #     """
