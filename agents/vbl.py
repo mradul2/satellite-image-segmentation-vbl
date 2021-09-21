@@ -7,11 +7,13 @@ from torch.autograd import Variable
 
 from losses.crossentropy import CrossEntropyLoss
 from models.enet import ENet 
-from dataloader.vblLoader import VBLDataLoader
+from dataloader.vbl_loader import VBLDataLoader
 
 from agents.base import BaseAgent
 
 from utils.metrics import IoUAccuracy
+
+from wandB.wandb_utils import init_wandb, wandb_log, wandb_save_summary, save_model_wandb
 
 class VBLAgent(BaseAgent):
     """
@@ -58,6 +60,17 @@ class VBLAgent(BaseAgent):
         self.loss = self.loss.to(self.device)
         # Model Loading from the latest checkpoint if not found start from scratch.
         self.load_checkpoint(self.config.checkpoint_file)
+
+        # Initializing WandB
+        print("Initializing WandB Run...")
+        try: 
+            init_wandb(self.model, self.config)
+            print("WandB initialized successfully")
+            print("WandB Project: ", self.config.wandb_project)
+            print("WandB Run: ", self.config.experiment)
+        
+        except:
+            print("WandB initiallization unsuccessfull!")
 
 
     def save_checkpoint(self, filename='checkpoint.pth.tar', is_best=0):
@@ -182,6 +195,38 @@ class VBLAgent(BaseAgent):
 
         return valid_loss
 
+    def evaluate(self):
+        self.model.eval()
+            
+        valid_accuracy = np.zeros((num_classes,), dtype=float)
+        valid_iou = np.zeros((num_classes,), dtype=float)
+
+        valid_results = []
+            
+        for batch in self.dataloader.valid_loader:
+            
+            inputs = batch[0].float().to(device)
+            labels = batch[1].float().to(device).long()
+
+            outputs = self.model(inputs)
+
+            metric = IoUAccuracy(self.config)
+            np_outputs, iou, accu = metric.evaluate(outputs, labels)
+            
+            valid_accuracy += accu
+            valid_iou += iou
+            valid_results.append(np_outputs)
+            
+        valid_accuracy /= len(val_DataLoader)
+        valid_iou /= len(val_DataLoader)
+
+        valid_results = np.array(val_results)
+
+        print("Accuracy: ", valid_accuracy)
+        print("IoU: ", valid_iou)
+
+        return valid_accuracy, valid_iou, val_results
+
     def test(self):
         self.model.eval()
             
@@ -223,3 +268,12 @@ class VBLAgent(BaseAgent):
         print("Please wait while finalizing the operation.. Thank you")
         self.save_checkpoint()
         self.dataloader.finalize()
+
+        print("Saving Model in WandB...")
+        try: 
+            save_model_wandb(self.config.checkpoint_dir + self.config.checkpoint_file)
+            save_model_wandb(self.config.checkpoint_dir + self.config.bestpoint_file)
+            print("Model saving sucessfull")
+        
+        except:
+            print("Model Saving unsuccessfull")
