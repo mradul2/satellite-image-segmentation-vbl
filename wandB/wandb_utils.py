@@ -12,7 +12,7 @@ def init_wandb(model, config) -> None:
         args (TrainOptions,optional): TrainOptions class (refer options/train_options.py). Defaults to None.
     """
 
-    wand.login()
+    wandb.login()
 
     wandb.init(
         name=config.experiment,
