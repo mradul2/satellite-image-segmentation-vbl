@@ -46,5 +46,5 @@
 ## Usage
 
 ```bash
-python3 main.py [--OPTIONS]
+python3 vbl/main.py [-h] [--mode MODE] vbl/config/file.json 
 ```

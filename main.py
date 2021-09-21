@@ -20,7 +20,7 @@ def main():
         default='None',
         help='The Configuration file in json format')
     arg_parser.add_argument(
-        'mode',
+        '--mode',
         metavar='mode_of_running',
         default='train',
         help='Mode of running: train or test')
