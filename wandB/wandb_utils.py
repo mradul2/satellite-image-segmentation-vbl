@@ -50,7 +50,7 @@ def wandb_log(train_loss, val_loss, train_acc, val_acc, train_iou, val_iou, epoc
 
     classes = ['un-classified', 'no-damage', 'minor-damage', 'major-damage', 'destroyed']
 
-    for num in len(classes):
+    for num in range(len(classes)):
         wandb.log({
             'Accuracy/Training/'+classes[num]: train_acc[num],
             'IoU/Training/'+classes[num]: train_iou[num],
