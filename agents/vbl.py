@@ -40,7 +40,7 @@ class VBLAgent(BaseAgent):
         # initialize counters
         self.current_epoch = 0
         self.current_iteration = 0
-        self.best_valid_loss = 10
+        self.best_valid_loss = 100
 
         # Check is cuda is available or not
         self.is_cuda = torch.cuda.is_available()
