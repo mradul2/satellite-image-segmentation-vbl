@@ -133,7 +133,7 @@ class VBLAgent(BaseAgent):
             self.current_epoch = epoch
 
             train_loss, train_accuracy, train_iou = self.train_one_epoch()            
-            valid_loss, valid_accuracy, valid_iou, valid_output = self.validate()
+            valid_loss, valid_accuracy, valid_iou, valid_output, valid_X, valid_y = self.validate()
 
             wandb_log(train_loss, valid_loss, train_accuracy, valid_accuracy, train_iou, valid_iou, self.current_epoch)
 
@@ -213,7 +213,7 @@ class VBLAgent(BaseAgent):
             metric = IoUAccuracy(self.config)
             np_output, iou, accu = metric.evaluate(outputs, labels)
 
-            valid_output.append(np_output)            
+            valid_results.append(np_output)            
             valid_accuracy += accu
             valid_iou += iou
             valid_X.append(inputs[0])
@@ -230,48 +230,6 @@ class VBLAgent(BaseAgent):
         return valid_loss, valid_accuracy, valid_iou, valid_output, valid_X, valid_y
 
         print("Validation Results at epoch-" + str(self.current_epoch) + " | " + "loss: " + str(valid_loss))
-
-
-    def test(self):
-        """ test the model using the provided pre trained weights 
-            
-        """
-        self.model.eval()
-            
-        valid_accuracy = np.zeros((num_classes,), dtype=float)
-        valid_iou = np.zeros((num_classes,), dtype=float)
-
-        valid_X = []
-        valid_y = []
-        valid_results = []
-            
-        for batch in self.dataloader:
-            
-            inputs = batch[0].float().to(device)
-            labels = batch[1].float().to(device).long()
-
-            outputs = self.model(inputs)
-
-            metric = IoUAccuracy(self.config)
-            np_outputs, iou, accu = metric.evaluate(outputs, labels)
-            
-            valid_accuracy += accu
-            valid_iou += iou
-
-            valid_results.append(np_outputs)
-
-            valid_X.append(inputs[0])
-            valid_y.append(labels[0])
-            
-        valid_accuracy /= len(val_DataLoader)
-        valid_iou /= len(val_DataLoader)
-
-        valid_results = np.array(val_results)
-
-        print("Accuracy: ", valid_accuracy)
-        print("IoU: ", valid_iou)
-
-        return valid_accuracy, valid_iou, val_results, valid_X, valid_y
 
 
     def final_summary(self):
