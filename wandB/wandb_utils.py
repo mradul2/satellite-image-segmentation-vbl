@@ -21,7 +21,6 @@ def init_wandb(model, config) -> None:
     wandb.init(
         name=config.experiment,
         project=config.wandb_project,
-        id=config.wandb_id,
         dir="./",
     )
 
