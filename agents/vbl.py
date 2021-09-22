@@ -272,8 +272,8 @@ class VBLAgent(BaseAgent):
         valid_y = []
 
         for batch in self.dataloader.valid_loader:
-            inputs = batch[0][0]
-            labels = batch[1][0]
+            image = batch[0][0]
+            label = batch[1][0]
 
             valid_X.append(image)
             valid_y.append(label)
