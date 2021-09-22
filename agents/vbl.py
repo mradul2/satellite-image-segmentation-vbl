@@ -237,6 +237,8 @@ class VBLAgent(BaseAgent):
         valid_accuracy = np.zeros((num_classes,), dtype=float)
         valid_iou = np.zeros((num_classes,), dtype=float)
 
+        valid_X = []
+        valid_y = []
         valid_results = []
             
         for batch in self.dataloader:
@@ -251,7 +253,11 @@ class VBLAgent(BaseAgent):
             
             valid_accuracy += accu
             valid_iou += iou
+
             valid_results.append(np_outputs)
+
+            valid_X.append(inputs[0])
+            valid_y.append(labels[0])
             
         valid_accuracy /= len(val_DataLoader)
         valid_iou /= len(val_DataLoader)
@@ -261,22 +267,12 @@ class VBLAgent(BaseAgent):
         print("Accuracy: ", valid_accuracy)
         print("IoU: ", valid_iou)
 
-        return valid_accuracy, valid_iou, val_results
+        return valid_accuracy, valid_iou, val_results, valid_X, valid_y
 
 
     def final_summary(self):
         self.load_checkpoint(self.config.checkpoint_dir + self.config.bestpoint_file)
-        valid_loss, valid_accuracy, valid_iou, valid_output = self.validate()
-
-        valid_X = []
-        valid_y = []
-
-        for batch in self.dataloader.valid_loader:
-            image = batch[0][0]
-            label = batch[1][0]
-
-            valid_X.append(image)
-            valid_y.append(label)
+        valid_loss, valid_accuracy, valid_iou, valid_output, valid_X, valid_y = self.validate()
 
         wandb_save_summary(valid_accuracy.mean(),
                            valid_iou.mean(),
