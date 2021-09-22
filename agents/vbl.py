@@ -227,7 +227,7 @@ class VBLAgent(BaseAgent):
         valid_accuracy /= len(self.dataloader.valid_loader)
         valid_iou /= len(self.dataloader.valid_loader)
 
-        return valid_loss, valid_accuracy, valid_iou, valid_output, valid_X, valid_y
+        return valid_loss, valid_accuracy, valid_iou, valid_results, valid_X, valid_y
 
         print("Validation Results at epoch-" + str(self.current_epoch) + " | " + "loss: " + str(valid_loss))
 
