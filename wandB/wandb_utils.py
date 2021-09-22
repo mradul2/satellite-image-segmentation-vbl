@@ -80,8 +80,7 @@ def wandb_save_summary(valid_mean_accuracy: float,
         1: 'no-damage',
         2: 'minor-damage',
         3: 'major-damage',
-        4: 'fence',
-        5: 'destroyed'
+        4: 'destroyed'
     }
 
     for i in range(len(valid_output // 10)):
