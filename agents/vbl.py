@@ -199,7 +199,9 @@ class VBLAgent(BaseAgent):
         valid_accuracy = np.zeros((self.config.num_classes,), dtype=float)
         valid_iou = np.zeros((self.config.num_classes,), dtype=float)
 
-        valid_output = []
+        valid_X = []
+        valid_y = []
+        valid_results = []
 
         for batch in self.dataloader.valid_loader:
             
@@ -214,6 +216,8 @@ class VBLAgent(BaseAgent):
             valid_output.append(np_output)            
             valid_accuracy += accu
             valid_iou += iou
+            valid_X.append(inputs[0])
+            valid_y.append(labels[0])
             
             loss = self.loss(outputs, labels)
             
@@ -223,7 +227,7 @@ class VBLAgent(BaseAgent):
         valid_accuracy /= len(self.dataloader.valid_loader)
         valid_iou /= len(self.dataloader.valid_loader)
 
-        return valid_loss, valid_accuracy, valid_iou, valid_output
+        return valid_loss, valid_accuracy, valid_iou, valid_output, valid_X, valid_y
 
         print("Validation Results at epoch-" + str(self.current_epoch) + " | " + "loss: " + str(valid_loss))
 
