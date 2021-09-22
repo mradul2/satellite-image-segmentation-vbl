@@ -83,7 +83,7 @@ def wandb_save_summary(valid_mean_accuracy: float,
         4: 'destroyed'
     }
 
-    for i in range(len(valid_output // 10)):
+    for i in range(len(valid_output) // 10):
         mask_img = wandb.Image(valid_X[i], masks={
         "predictions": {
             "mask_data": valid_output[i],
