@@ -216,8 +216,8 @@ class VBLAgent(BaseAgent):
             valid_results.append(np_output)            
             valid_accuracy += accu
             valid_iou += iou
-            valid_X.append(inputs[0])
-            valid_y.append(labels[0])
+            valid_X.append(inputs[0].cpu().detach().numpy())
+            valid_y.append(labels[0].cpu().detach().numpy())
             
             loss = self.loss(outputs, labels)
             
@@ -229,7 +229,6 @@ class VBLAgent(BaseAgent):
 
         return valid_loss, valid_accuracy, valid_iou, valid_results, valid_X, valid_y
 
-        print("Validation Results at epoch-" + str(self.current_epoch) + " | " + "loss: " + str(valid_loss))
 
 
     def final_summary(self):
