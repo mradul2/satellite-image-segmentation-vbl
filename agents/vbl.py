@@ -216,7 +216,9 @@ class VBLAgent(BaseAgent):
             valid_results.append(np_output)            
             valid_accuracy += accu
             valid_iou += iou
-            valid_X.append(inputs[0].cpu().detach().numpy())
+
+            inputs = np.transpose(inputs[0].cpu().detach().numpy(), (2,1,0))
+            valid_X.append(inputs)
             valid_y.append(labels[0].cpu().detach().numpy())
             
             loss = self.loss(outputs, labels)
