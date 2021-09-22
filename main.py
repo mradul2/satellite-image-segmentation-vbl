@@ -34,6 +34,11 @@ def main():
         metavar='wanb_logging',
         default='true',
         help='Enter your wandb setting')
+    arg_parser.add_argument(
+        '--exp',
+        metavar='experiment_name',
+        default='vanilla_enet',
+        help='Enter your experiment name')
 
     args = arg_parser.parse_args()
 
@@ -43,6 +48,7 @@ def main():
     config.mode = args.mode
     config.wandb_id = args.wandb_id
     config.wandb = args.wandb
+    config.experiment = args.exp
 
     # Create the Agent and pass all the configuration to it then run it..
     agent_class = globals()[config.agent]
