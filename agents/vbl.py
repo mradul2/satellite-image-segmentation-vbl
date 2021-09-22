@@ -271,8 +271,10 @@ class VBLAgent(BaseAgent):
         valid_X = []
         valid_y = []
 
-        for idx in range(len(self.dataloader.dataset)):
-            image, label = self.dataloader.dataset[idx]
+        for batch in self.dataloader.valid_loader:
+            inputs = batch[0][0]
+            labels = batch[1][0]
+
             valid_X.append(image)
             valid_y.append(label)
 
@@ -297,10 +299,6 @@ class VBLAgent(BaseAgent):
             print("Logging final metrics in WandB...")
             self.final_summary()
             print("Saving Model in WandB...")
-            try: 
-                save_model_wandb(self.config.checkpoint_dir + self.config.checkpoint_file)
-                save_model_wandb(self.config.checkpoint_dir + self.config.bestpoint_file)
-                print("Model saving sucessfull")
-            
-            except:
-                print("Model Saving unsuccessfull")
+
+            save_model_wandb(self.config.checkpoint_dir + self.config.checkpoint_file)
+            save_model_wandb(self.config.checkpoint_dir + self.config.bestpoint_file)
