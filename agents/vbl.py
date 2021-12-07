@@ -6,7 +6,7 @@ from torch.backends import cudnn
 from torch.autograd import Variable
 
 from losses.crossentropy import CrossEntropyLoss
-from models.enet import ENet 
+from models.enet import ENet, UNet
 from dataloader.vbl_loader import VBLDataLoader
 
 from agents.base import BaseAgent
@@ -23,8 +23,13 @@ class VBLAgent(BaseAgent):
     def __init__(self, config):
         super().__init__(config)
 
-        # define ENet model
-        self.model = ENet(self.config)
+        # Choose model from confoig file:
+        if self.config.model is "unet":
+            self.model = UNet(self.config)
+        else if self.config.model is "enet":
+            self.model = ENet(self.config)
+        else: 
+            print("Incorrect Model provided!!!")
         # Create an instance from the data loader
         self.dataloader = VBLDataLoader(self.config)
         # Create instance from the loss
@@ -263,4 +268,3 @@ class VBLAgent(BaseAgent):
             
             print("Logging final metrics in WandB...")
             self.final_summary()
-

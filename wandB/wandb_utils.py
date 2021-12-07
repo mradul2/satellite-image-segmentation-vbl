@@ -19,7 +19,6 @@ def init_wandb(model, config) -> None:
         wandb.login(key=config.wandb_id)
 
     wandb.init(
-        name=config.experiment,
         project=config.wandb_project,
         dir="./",
     )

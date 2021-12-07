@@ -34,11 +34,6 @@ def main():
         metavar='wanb_logging',
         default='true',
         help='Enter your wandb setting')
-    arg_parser.add_argument(
-        '--exp',
-        metavar='experiment_name',
-        default='vanilla_enet',
-        help='Enter your experiment name')
 
     args = arg_parser.parse_args()
 

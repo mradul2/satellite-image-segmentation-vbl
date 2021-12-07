@@ -38,9 +38,12 @@
 │   ├── wandbUtils.py
 ├── __init__.py        
 ├── main.py            
-├── README.md          
-├── requirements.txt    
-└── run.sh
+├── README.md
+```
+
+## Installation
+```bash
+git clone https://github.com/mradul2/vbl.git
 ```
 
 ## Usage
