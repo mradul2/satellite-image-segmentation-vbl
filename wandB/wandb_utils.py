@@ -12,12 +12,6 @@ def init_wandb(model, config) -> None:
         args (TrainOptions,optional): TrainOptions class (refer options/train_options.py). Defaults to None.
     """
 
-    if config.wandb_id == None:
-        wandb.login()
-    else:
-        print("Wandb api key provided...")
-        wandb.login(key=config.wandb_id)
-
     wandb.init(
         project=config.wandb_project,
         dir="./",

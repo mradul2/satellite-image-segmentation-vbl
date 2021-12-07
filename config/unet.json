@@ -27,6 +27,5 @@
   "valid_split": 0.2,
   "wandb": true,
   "wandb_project": "vision-beyond-limits",
-  "bestpoint_file": "model_best.pth.tar",
-  "wandb_id": null
+  "bestpoint_file": "model_best.pth.tar"
 }

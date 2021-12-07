@@ -25,11 +25,6 @@ def main():
         default='train',
         help='Mode of running: train or test')
     arg_parser.add_argument(
-        '--wandb_id',
-        metavar='api_key_wandb',
-        default='null',
-        help='Enter your wandb API key')
-    arg_parser.add_argument(
         '--wandb',
         metavar='wanb_logging',
         default='true',
@@ -41,9 +36,7 @@ def main():
     config = process_config(args.config)
     # Set mode provided
     config.mode = args.mode
-    config.wandb_id = args.wandb_id
     config.wandb = args.wandb
-    config.experiment = args.exp
 
     # Create the Agent and pass all the configuration to it then run it..
     agent_class = globals()[config.agent]

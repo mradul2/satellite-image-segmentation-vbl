@@ -30,6 +30,7 @@ class VBLAgent(BaseAgent):
             self.model = ENet(self.config)
         else: 
             print("Incorrect Model provided!!!")
+            
         # Create an instance from the data loader
         self.dataloader = VBLDataLoader(self.config)
         # Create instance from the loss
