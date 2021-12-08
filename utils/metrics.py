@@ -7,6 +7,9 @@ This file will contain the metrics of the framework
 
 import numpy as np
 
+import numpy as np
+import torch
+
 def _fast_hist(label_true, label_pred, n_class):
     mask = (label_true >= 0) & (label_true < n_class)
     hist = np.bincount(
@@ -38,8 +41,6 @@ def scores(label_trues, label_preds, n_class):
         "Class IoU": iu,
     }
 
-import numpy as np
-import torch
 
 class IoUAccuracy:
     """

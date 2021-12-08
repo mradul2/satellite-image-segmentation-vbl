@@ -13,12 +13,11 @@ def init_wandb(model, config) -> None:
     """
 
     wandb.init(
+        config = config,
         project=config.wandb_project,
         dir="./",
     )
-
-    wandb.watch(model, log="all")
-
+)
 
 def wandb_log(train_loss, val_loss, train_acc, val_acc, train_iou, val_iou, epoch):
     """

@@ -29,13 +29,3 @@ class DeepLabV1(nn.Sequential):
         self.add_module("layer4", _ResLayer(n_blocks[2], ch[3], ch[4], 1, 2))
         self.add_module("layer5", _ResLayer(n_blocks[3], ch[4], ch[5], 1, 4))
         self.add_module("fc", nn.Conv2d(2048, n_classes, 1))
-
-
-if __name__ == "__main__":
-    model = DeepLabV1(n_classes=21, n_blocks=[3, 4, 23, 3])
-    model.eval()
-    image = torch.randn(1, 3, 513, 513)
-
-    print(model)
-    print("input:", image.shape)
-    print("output:", model(image).shape)
