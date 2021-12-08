@@ -8,6 +8,10 @@ from torch.autograd import Variable
 from losses.crossentropy import CrossEntropyLoss
 from models.enet import ENet
 from models.unet import UNet
+from models.deeplabv1 import DeepLabV1
+from models.deeplabv2 import DeepLabV2
+from models.deeplabv3 import DeepLabV3
+from models.deeplabv3plus import DeepLabV3Plus
 from dataloader.vbl_loader import VBLDataLoader
 
 from agents.base import BaseAgent
@@ -29,6 +33,8 @@ class VBLAgent(BaseAgent):
             self.model = UNet(self.config)
         elif self.config.model == "enet":
             self.model = ENet(self.config)
+        elif self.config.model == "deeplabv1":
+            self.model = DeepLabV1(n_classes=self.config.num_classes, n_blocks=[3, 4, 23, 3])
         else: 
             print("Incorrect Model provided!!!")
 
