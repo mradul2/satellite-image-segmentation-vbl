@@ -1,5 +1,4 @@
 {
-  "experiment": "vanilla_enet",
   "agent": "VBLAgent",
   "model": "unet",
   "mode": "train",

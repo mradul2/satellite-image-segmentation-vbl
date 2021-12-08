@@ -4,8 +4,9 @@ import shutil
 import torch
 from torch.backends import cudnn
 from torch.autograd import Variable
+import torch.nn.functional as F
+import torch.nn as nn
 
-from losses.crossentropy import CrossEntropyLoss
 from models.enet import ENet
 from models.unet import UNet
 from models.deeplabv1 import DeepLabV1
@@ -14,13 +15,12 @@ from models.deeplabv3 import DeepLabV3
 from models.deeplabv3plus import DeepLabV3Plus
 from dataloader.vbl_loader import VBLDataLoader
 
-from agents.base import BaseAgent
 
 from utils.metrics import IoUAccuracy
 
-from wandB.wandb_utils import init_wandb, wandb_log, wandb_save_summary, save_model_wandb
+from utils.wandb import init_wandb, wandb_log, wandb_save_summary, save_model_wandb
 
-class VBLAgent(BaseAgent):
+class VBLAgent():
     """
     This class will be responsible for handling the whole process of our architecture.
     """
@@ -46,11 +46,11 @@ class VBLAgent(BaseAgent):
             exit()
 
         print("Model created: ", self.config.model)
-        
+
         # Create an instance from the data loader
         self.dataloader = VBLDataLoader(self.config)
         # Create instance from the loss
-        self.loss = CrossEntropyLoss(self.config)
+        self.loss = nn.CrossEntropyLoss(ignore_index=config.ignore_index)
         # Create instance from the optimizer
         self.optimizer = torch.optim.Adam(self.model.parameters(),
                                           lr=self.config.learning_rate,

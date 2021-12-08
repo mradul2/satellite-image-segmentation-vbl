@@ -9,7 +9,7 @@ Main
 import argparse
 
 from utils.config import process_config
-from agents.vbl import VBLAgent
+from vbl import VBLAgent
 
 def main():
     # parse the path of the json config file
@@ -39,8 +39,7 @@ def main():
     config.wandb = args.wandb
 
     # Create the Agent and pass all the configuration to it then run it..
-    agent_class = globals()[config.agent]
-    agent = agent_class(config)
+    agent = VBLAgent(config)
     agent.run()
     agent.finalize()
 

@@ -37,6 +37,7 @@ def scores(label_trues, label_preds, n_class):
         "Mean IoU": mean_iu,
         "Class IoU": iu,
     }
+
 import numpy as np
 import torch
 
