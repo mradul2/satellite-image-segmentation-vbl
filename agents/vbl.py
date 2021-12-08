@@ -28,16 +28,25 @@ class VBLAgent(BaseAgent):
     def __init__(self, config):
         super().__init__(config)
 
-        # Choose model from confoig file:
+        # Choose model from config file:
         if self.config.model == "unet":
             self.model = UNet(self.config)
         elif self.config.model == "enet":
             self.model = ENet(self.config)
         elif self.config.model == "deeplabv1":
             self.model = DeepLabV1(n_classes=self.config.num_classes, n_blocks=[3, 4, 23, 3])
+        elif self.config.model == "deeplabv2":
+            self.model = DeepLabV2(n_classes=self.config.num_classes, n_blocks=[3, 4, 23, 3], atrous_rates=[6, 12, 18, 24])
+        elif self.config.model == "deeplabv3":
+            self.model = DeepLabV3(n_classes=self.config.num_classes, n_blocks=[3, 4, 23, 3], atrous_rates=[6, 12, 18], multi_grids=[1, 2, 4], output_stride=8)
+        elif self.config.model == "deeplabv3plus":
+            self.model = DeepLabV3Plus(n_classes=self.config.num_classes, n_blocks=[3, 4, 23, 3], atrous_rates=[6, 12, 18], multi_grids=[1, 2, 4], output_stride=16)
         else: 
             print("Incorrect Model provided!!!")
+            exit()
 
+        print("Model created: ", self.config.model)
+        
         # Create an instance from the data loader
         self.dataloader = VBLDataLoader(self.config)
         # Create instance from the loss
