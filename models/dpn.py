@@ -462,8 +462,3 @@ class AdaptiveAvgMaxPool2d(torch.nn.Module):
         return self.__class__.__name__ + ' (' \
                + 'output_size=' + str(self.output_size) \
                + ', pool_type=' + self.pool_type + ')'
-
-if __name__ == "__main__":
-    model = dpn131()
-    print(model.features, len(model.features))
-    print(model.features[2])

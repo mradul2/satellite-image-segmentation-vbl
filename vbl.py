@@ -9,7 +9,7 @@ import torch.nn as nn
 
 from models.enet import ENet
 from models.unet import UNet
-from models.models import SeNet154_Unet_Double
+from models.lib import SeNet154_Unet_Double
 
 
 from dataloader.vbl_loader import VBLDataLoader
