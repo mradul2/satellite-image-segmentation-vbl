@@ -9,6 +9,7 @@ import torch.nn as nn
 
 from models.enet import ENet
 from models.unet import UNet
+from models.models import SeNet154_Unet_Double
 
 
 from dataloader.vbl_loader import VBLDataLoader
@@ -29,6 +30,8 @@ class VBLAgent():
             self.model = UNet(self.config)
         elif self.config.model == "enet":
             self.model = ENet(self.config)
+        elif self.config.model == "SeNet154_Unet_Double":
+            self.model = SeNet154_Unet_Double()
         else: 
             print("Incorrect Model provided!!!")
             exit()
