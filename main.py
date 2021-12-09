@@ -8,8 +8,8 @@ Main
 
 import argparse
 
-from utils.config import process_config
-from agent.vbl_agent import VBLAgent
+from .utils.config import process_config
+from .agent.vbl_agent import VBLAgent
 
 def main():
     # parse the path of the json config file
