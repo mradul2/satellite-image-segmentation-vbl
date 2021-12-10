@@ -27,7 +27,7 @@ class VBL(Dataset):
 
         # For CutMix Data Augmentation
         self.cutmix = cutmix
-        self.num_mix = 1
+        self.num_mix = 5
         self.beta = 1.0
         self.prob = 1.0
 
