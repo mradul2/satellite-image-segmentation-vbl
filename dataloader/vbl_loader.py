@@ -93,25 +93,25 @@ class VBLDataLoader:
             self.train_pixels = np.zeros(5)
             self.valid_pixels = np.zeros(5)
 
-            for batch in train_loader: 
+            for batch in self.train_loader: 
                 image, label = batch
-                unique, counts = numpy.unique(label, return_counts=True)
+                unique, counts = np.unique(label, return_counts=True)
                 mapping = dict(zip(unique, counts))
-                for num in range(config.num_classes):
-                    self.train_pixels[num] += mapping[num]
+                for key in mapping:
+                    self.train_pixels[key] += mapping[key]
 
-            for batch in valid_loader: 
+            for batch in self.valid_loader: 
                 image, label = batch
-                unique, counts = numpy.unique(label, return_counts=True)
+                unique, counts = np.unique(label, return_counts=True)
                 mapping = dict(zip(unique, counts))
-                for num in range(config.num_classes):
-                    self.valid_pixels[num] += mapping[num]
+                for key in mapping:
+                    self.valid_pixels[key] += mapping[key]
 
-            self.train_pixels = self.train_pixels / np.sum(self.train_pixels)
-            self.valid_pixels = self.valid_pixels / np.sum(self.valid_pixels)
+            self.train_wts = self.train_pixels / np.sum(self.train_pixels)
+            self.valid_wts = self.valid_pixels / np.sum(self.valid_pixels)
 
-            print("Class distribution in Train Loader: ", self.train_pixels)
-            print("Class distribution in Valid Loader: ", self.valid_pixels)
+            print("Class distribution in Train Loader: ", self.train_wts)
+            print("Class distribution in Valid Loader: ", self.valid_wts)
 
         elif self.config.mode == 'test':
             print("---Testing Mode---")

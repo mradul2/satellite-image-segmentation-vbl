@@ -34,6 +34,11 @@ def main():
         metavar='model_name',
         default='unet',
         help='Enter name of the Model')
+    arg_parser.add_argument(
+        '--weighted',
+        metavar='weighted_training',
+        default='false',
+        help='Weighted training mode or not')
     
 
     args = arg_parser.parse_args()
@@ -45,6 +50,7 @@ def main():
     config.mode = args.mode
     config.wandb = args.wandb
     config.model = args.model
+    config.weighted = args.weighted
 
     # Create the Agent and pass all the configuration to it then run it..
     agent = VBLAgent(config)

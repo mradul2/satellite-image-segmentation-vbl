@@ -38,22 +38,6 @@ class VBLAgent():
 
         print("Model created: ", self.config.model)
 
-        # Create an instance from the data loader
-        self.dataloader = VBLDataLoader(self.config)
-        # Create instance from the loss
-        self.loss = nn.CrossEntropyLoss(ignore_index=config.ignore_index)
-        # Create instance from the optimizer
-        self.optimizer = torch.optim.Adam(self.model.parameters(),
-                                          lr=self.config.learning_rate,
-                                          weight_decay=self.config.weight_decay)
-        # Define Scheduler
-        self.scheduler = torch.optim.lr_scheduler.ExponentialLR(self.optimizer,
-                                                                gamma=self.config.gamma)
-        
-        # initialize counters
-        self.current_epoch = 0
-        self.current_iteration = 0
-        self.best_valid_loss = 100
 
         # Check is cuda is available or not
         self.is_cuda = torch.cuda.is_available()
@@ -68,6 +52,31 @@ class VBLAgent():
         else:
             self.device = torch.device("cpu")
             torch.manual_seed(self.config.seed)
+
+        # Create an instance from the data loader
+        self.dataloader = VBLDataLoader(self.config)
+
+        # Create loss function according to the option of weighted loss 
+        self.weight = self.dataloader.train_wts
+        self.weigth = (torch.from_numpy(weight)).to(self.device)
+        if self.config.weighted:
+            self.loss = nn.CrossEntropyLoss(ignore_index=config.ignore_index, weight = self.weight)
+        else:
+            # Create instance from the loss
+            self.loss = nn.CrossEntropyLoss(ignore_index=config.ignore_index)
+            
+        # Create instance from the optimizer
+        self.optimizer = torch.optim.Adam(self.model.parameters(),
+                                          lr=self.config.learning_rate,
+                                          weight_decay=self.config.weight_decay)
+        # Define Scheduler
+        self.scheduler = torch.optim.lr_scheduler.ExponentialLR(self.optimizer,
+                                                                gamma=self.config.gamma)
+        
+        # initialize counters
+        self.current_epoch = 0
+        self.current_iteration = 0
+        self.best_valid_loss = 100
 
         self.model = self.model.to(self.device)
         self.loss = self.loss.to(self.device)
@@ -145,7 +154,7 @@ class VBLAgent():
             self.current_epoch = epoch
 
             train_loss, train_accuracy, train_iou = self.train_one_epoch()            
-            valid_loss, valid_accuracy, valid_iou, valid_output, valid_X, valid_y = self.validate()
+            valid_loss, valid_accuracy, valid_iou = self.validate()
 
             wandb_log(train_loss, valid_loss, train_accuracy, valid_accuracy, train_iou, valid_iou, self.current_epoch)
 
@@ -177,7 +186,7 @@ class VBLAgent():
             outputs = self.model(inputs)
 
             metric = IoUAccuracy(self.config)
-            np_output, iou, accu = metric.evaluate(outputs, labels)
+            iou, accu = metric.evaluate(outputs, labels)
             
             train_accuracy += accu
             train_iou += iou
@@ -239,7 +248,7 @@ class VBLAgent():
         valid_accuracy /= len(self.dataloader.valid_loader)
         valid_iou /= len(self.dataloader.valid_loader)
 
-        return valid_loss, valid_accuracy, valid_iou, valid_results
+        return valid_loss, valid_accuracy, valid_iou
 
 
 
