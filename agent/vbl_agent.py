@@ -57,14 +57,14 @@ class VBLAgent():
         self.dataloader = VBLDataLoader(self.config)
 
         # Create loss function according to the option of weighted loss 
-        self.weight = self.dataloader.train_wts
-        self.weigth = (torch.from_numpy(weight)).to(self.device)
+        self.weight = torch.FloatTensor(self.dataloader.train_wts)
+        self.weight = (self.weight).to(self.device)
         if self.config.weighted:
             self.loss = nn.CrossEntropyLoss(ignore_index=config.ignore_index, weight = self.weight)
         else:
             # Create instance from the loss
             self.loss = nn.CrossEntropyLoss(ignore_index=config.ignore_index)
-            
+
         # Create instance from the optimizer
         self.optimizer = torch.optim.Adam(self.model.parameters(),
                                           lr=self.config.learning_rate,

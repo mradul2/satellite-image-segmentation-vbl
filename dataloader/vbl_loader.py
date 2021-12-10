@@ -10,10 +10,12 @@ import torchvision.transforms as transforms
 from utils.xview import generate_localization_polygon, generate_damage_polygon
 from utils.datasplitting import datasetSplitter
 
+from utils.cutmix import rand_bbox
+
 import glob
 
 class VBL(Dataset):
-    def __init__(self, data_root, transforms):
+    def __init__(self, data_root, transforms, cutmix):
         self.data_root = data_root
 
         self.image_path = self.data_root + "Images/"
@@ -21,6 +23,12 @@ class VBL(Dataset):
 
         self.image_list = []
         self.label_list = []
+
+        # For CutMix Data Augmentation
+        self.cutmix = cutmix
+        self.num_mix = 1
+        self.beta = 1.0
+        self.prob = 1.0
 
         print("Appending Images and Labels to the List...")
         for imgPath in sorted(glob.glob(self.image_path + "*.png")):
@@ -41,9 +49,21 @@ class VBL(Dataset):
         image = cv2.imread(imagePath)
         label = generate_damage_polygon(labelPath)
 
+        if self.cutmix:
+            for _ in range(self.num_mix):
+                r = np.random.rand(1)
+                if self.beta <= 0 or r > self.prob:
+                    continue
+                lam = np.random.beta(self.beta, self.beta)
+                rand_index = random.choice(range(len(self)))
+                image2 = self.data[rand_index]
+                label2 = self.label[rand_index]
+                bbx1, bby1, bbx2, bby2 = rand_bbox(image.shape, lam)
+                image[bby1:bby2, bbx1:bbx2, :] = image2[bby1:bby2, bbx1:bbx2, :]
+                label[bby1:bby2, bbx1:bbx2] = label2[bby1:bby2, bbx1:bbx2]
+
         if self.transform is not None:
             image = self.transform(image)
-
         return image, label
 
     def __len__(self):
@@ -73,7 +93,8 @@ class VBLDataLoader:
         if self.config.mode == 'train':
             print("---Training Mode---")
             self.dataset = VBL(self.config.data_root,
-                            transforms=self.transform)
+                            transforms=self.transform,
+                            cutmix=self.config.cutmix)
 
             print("Loading Data into DataLoaders...")
 

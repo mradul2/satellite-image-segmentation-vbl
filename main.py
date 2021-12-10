@@ -39,8 +39,12 @@ def main():
         metavar='weighted_training',
         default='false',
         help='Weighted training mode or not')
+    arg_parser.add_argument(
+        '--cutmix',
+        metavar='cutmix_training',
+        default='true',
+        help='Cutmix Augmented training mode or not')
     
-
     args = arg_parser.parse_args()
 
     # Parse the config json file
@@ -51,6 +55,7 @@ def main():
     config.wandb = args.wandb
     config.model = args.model
     config.weighted = args.weighted
+    config.cutmix = args.cutmix
 
     # Create the Agent and pass all the configuration to it then run it..
     agent = VBLAgent(config)

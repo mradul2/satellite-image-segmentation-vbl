@@ -23,7 +23,6 @@ def scores(label_trues, label_preds, n_class):
         hist += _fast_hist(lt.flatten(), lp.flatten(), n_class)
     acc = np.diag(hist).sum() / hist.sum()
     acc_cls = np.diag(hist) / hist.sum(axis=1)
-    acc_cls = np.nanmean(acc_cls)
     iu = np.diag(hist) / (hist.sum(axis=1) + hist.sum(axis=0) - np.diag(hist))
     valid = hist.sum(axis=1) > 0  # added
     mean_iu = np.nanmean(iu[valid])
@@ -57,7 +56,7 @@ class IoUAccuracy:
         score_dict = scores(np_labels, np_outputs, self.num_classes)
 
         iou = score_dict["Class IoU"]
-        accu = score_dict["Pixel Accuracy"]
+        accu = score_dict["Mean Accuracy"]
 
         # return np_outputs.squeeze(), iou, accu
         return iou, accu
