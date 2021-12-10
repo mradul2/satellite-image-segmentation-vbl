@@ -3,6 +3,7 @@ import os
 import torch
 import numpy as np
 import cv2
+import random
 
 from torch.utils.data import DataLoader, Dataset
 import torchvision.transforms as transforms
@@ -56,8 +57,10 @@ class VBL(Dataset):
                     continue
                 lam = np.random.beta(self.beta, self.beta)
                 rand_index = random.choice(range(len(self)))
-                image2 = self.data[rand_index]
-                label2 = self.label[rand_index]
+                imagePath2 = self.image_list[index]
+                labelPath2 = self.label_list[index]
+                image2 = cv2.imread(imagePath2)
+                label2 = generate_damage_polygon(labelPath2)
                 bbx1, bby1, bbx2, bby2 = rand_bbox(image.shape, lam)
                 image[bby1:bby2, bbx1:bbx2, :] = image2[bby1:bby2, bbx1:bbx2, :]
                 label[bby1:bby2, bbx1:bbx2] = label2[bby1:bby2, bbx1:bbx2]

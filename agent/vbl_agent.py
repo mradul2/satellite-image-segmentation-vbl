@@ -36,7 +36,8 @@ class VBLAgent():
             print("Incorrect Model provided!!!")
             exit()
 
-        print("Model created: ", self.config.model)
+        print("Training Configurations:")
+        print(self.config)
 
 
         # Check is cuda is available or not

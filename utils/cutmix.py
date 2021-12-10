@@ -1,4 +1,5 @@
 import random
+import numpy as np
 
 def rand_bbox(size, lam):
     if len(size) == 4:
