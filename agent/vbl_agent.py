@@ -15,7 +15,7 @@ from models.lib import SeNet154_Unet_Double
 from dataloader.vbl_loader import VBLDataLoader
 
 from utils.metrics import IoUAccuracy
-from utils.wandb import init_wandb, wandb_log, wandb_save_summary, save_model_wandb
+from utils.wandb import init_wandb, wandb_log, wandb_save_summary, save_model_wandb, wandb_log_conf_matrix
 
 class VBLAgent():
     """
@@ -196,9 +196,6 @@ class VBLAgent():
 
         return train_loss, train_accuracy, train_iou
 
-        print("Training Results at epoch-" + str(self.current_epoch) + " | " + "loss: " + str(train_loss))
-
-
     def validate(self):
         """
         One epoch validation
@@ -211,9 +208,9 @@ class VBLAgent():
         valid_accuracy = np.zeros((self.config.num_classes,), dtype=float)
         valid_iou = np.zeros((self.config.num_classes,), dtype=float)
 
-        valid_X = []
-        valid_y = []
-        valid_results = []
+        # valid_X = []
+        # valid_y = []
+        # valid_results = []
 
         for batch in self.dataloader.valid_loader:
             
@@ -223,15 +220,16 @@ class VBLAgent():
             outputs = self.model(inputs)
 
             metric = IoUAccuracy(self.config)
-            np_output, iou, accu = metric.evaluate(outputs, labels)
+            # np_output, iou, accu = metric.evaluate(outputs, labels)
+            iou, accu = metric.evaluate(outputs, labels)
 
-            valid_results.append(np_output)            
+            # valid_results.append(np_output)            
             valid_accuracy += accu
             valid_iou += iou
 
             inputs = np.transpose(inputs[0].cpu().detach().numpy(), (2,1,0))
-            valid_X.append(inputs)
-            valid_y.append(labels[0].cpu().detach().numpy())
+            # valid_X.append(inputs)
+            # valid_y.append(labels[0].cpu().detach().numpy())
             
             loss = self.loss(outputs, labels)
             
@@ -241,13 +239,15 @@ class VBLAgent():
         valid_accuracy /= len(self.dataloader.valid_loader)
         valid_iou /= len(self.dataloader.valid_loader)
 
-        return valid_loss, valid_accuracy, valid_iou, valid_results, valid_X, valid_y
+        return valid_loss, valid_accuracy, valid_iou, valid_results
 
 
 
     def final_summary(self):
         self.load_checkpoint(self.config.checkpoint_dir + self.config.bestpoint_file)
         valid_loss, valid_accuracy, valid_iou, valid_output, valid_X, valid_y = self.validate()
+
+        wandb_log_conf_matrix(valid_y, valid_output)
 
         wandb_save_summary(valid_accuracy.mean(),
                            valid_iou.mean(),
@@ -267,11 +267,5 @@ class VBLAgent():
         self.dataloader.finalize()
 
         if self.config.wandb:
-
-            print("Saving Model in WandB...")
-
-            save_model_wandb(self.config.checkpoint_dir + self.config.checkpoint_file)
-            save_model_wandb(self.config.checkpoint_dir + self.config.bestpoint_file)
-            
-            print("Logging final metrics in WandB...")
-            self.final_summary()
+            print("Logging Final Metrics")
+            # self.final_summary()

@@ -6,8 +6,6 @@ This file will contain the metrics of the framework
 # https://github.com/wkentaro/pytorch-fcn/blob/master/torchfcn/utils.py
 
 import numpy as np
-
-import numpy as np
 import torch
 
 def _fast_hist(label_true, label_pred, n_class):
@@ -61,4 +59,5 @@ class IoUAccuracy:
         iou = score_dict["Class IoU"]
         accu = score_dict["Pixel Accuracy"]
 
-        return np_outputs.squeeze(), iou, accu
+        # return np_outputs.squeeze(), iou, accu
+        return iou, accu

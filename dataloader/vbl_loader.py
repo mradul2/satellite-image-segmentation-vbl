@@ -89,6 +89,30 @@ class VBLDataLoader:
             self.valid_iterations = (len(self.dataset) * self.valid_split) // self.config.valid_batch_size + 1
 
 
+            # Calculating number of pixels of each class type in train and val dataset
+            self.train_pixels = np.zeros(5)
+            self.valid_pixels = np.zeros(5)
+
+            for batch in train_loader: 
+                image, label = batch
+                unique, counts = numpy.unique(label, return_counts=True)
+                mapping = dict(zip(unique, counts))
+                for num in range(config.num_classes):
+                    self.train_pixels[num] += mapping[num]
+
+            for batch in valid_loader: 
+                image, label = batch
+                unique, counts = numpy.unique(label, return_counts=True)
+                mapping = dict(zip(unique, counts))
+                for num in range(config.num_classes):
+                    self.valid_pixels[num] += mapping[num]
+
+            self.train_pixels = self.train_pixels / np.sum(self.train_pixels)
+            self.valid_pixels = self.valid_pixels / np.sum(self.valid_pixels)
+
+            print("Class distribution in Train Loader: ", self.train_pixels)
+            print("Class distribution in Valid Loader: ", self.valid_pixels)
+
         elif self.config.mode == 'test':
             print("---Testing Mode---")
             test_set = VBL(self.config.data_root,
