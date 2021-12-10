@@ -58,8 +58,13 @@ class VBLAgent():
         self.dataloader = VBLDataLoader(self.config)
 
         # Create loss function according to the option of weighted loss 
-        self.weight = torch.FloatTensor(self.dataloader.train_wts)
-        self.weight = (self.weight).to(self.device)
+        self.weight = []
+        for cls in range(self.config.num_classes):
+            temp = (self.dataloader.train_wts)[cls]
+            temp = 1/np.log(1.02 + temp)
+            (self.weight).append(temp)
+        self.weight = torch.FloatTensor(self.weight).to(self.device)
+        
         if self.config.weighted:
             self.loss = nn.CrossEntropyLoss(ignore_index=config.ignore_index, weight = self.weight)
         else:
