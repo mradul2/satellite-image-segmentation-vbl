@@ -57,8 +57,8 @@ class VBL(Dataset):
                     continue
                 lam = np.random.beta(self.beta, self.beta)
                 rand_index = random.choice(range(len(self)))
-                imagePath2 = self.image_list[index]
-                labelPath2 = self.label_list[index]
+                imagePath2 = self.image_list[rand_index]
+                labelPath2 = self.label_list[rand_index]
                 image2 = cv2.imread(imagePath2)
                 label2 = generate_damage_polygon(labelPath2)
                 bbx1, bby1, bbx2, bby2 = rand_bbox(image.shape, lam)
