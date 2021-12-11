@@ -20,11 +20,6 @@ def main():
         default='None',
         help='The Configuration file in json format')
     arg_parser.add_argument(
-        '--mode',
-        metavar='mode_of_running',
-        default='train',
-        help='Mode of running: train or test')
-    arg_parser.add_argument(
         '--wandb',
         metavar='wanb_logging',
         default='true',
@@ -45,7 +40,7 @@ def main():
         default='true',
         help='Cutmix Augmented training mode or not')
     arg_parser.add_argument(
-        '--epoch,
+        '--epoch',
         metavar='number_of_epochs',
         default=100,
         help='Number of Epochs for training')
@@ -62,7 +57,6 @@ def main():
     config = process_config(args.config)
 
     # Set mode provided
-    config.mode = args.mode
     config.wandb = args.wandb
     config.model = args.model
     config.weighted = args.weighted

@@ -140,7 +140,8 @@ class VBLDataLoader:
         elif self.config.mode == 'test':
             print("---Testing Mode---")
             test_set = VBL(self.config.data_root,
-                            transforms=self.transform)
+                            transforms=self.transform,
+                            cutmix = False)
 
             self.test_loader = DataLoader(test_set, batch_size=self.config.test_batch_size, shuffle=False)
             self.test_iterations = (len(test_set) + self.config.test_batch_size) // self.config.test_batch_size

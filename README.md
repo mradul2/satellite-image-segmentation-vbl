@@ -33,19 +33,18 @@ wandb login
 ```
 Run the script:
 ```bash
-python3 main.py config.json [--mode MODE] [--model MODEL]
+python3 main.py config.json [--model MODEL]
         [--wandb WANDB_SETTING] [--weighted WEIGHTED_TRAINING]
         [--cutmix CUTMIX_TRAINING] [--bs TRAIN_BATCH_SIZE]
         [--epoch NUMBER_OF_EPOCHS]
 
 ```
 
-1. Default config file `config.json` can be used to train/test the model with the defualt settings and various elements can be changed accordingly inside it.
-2. There are two different modes for running the pipeline: `train` and `test`. Train mode is used to train the model with the provided settings and test mode can be used to further evaluate the model on the pre-trained weights. 
-3. Available model architectures: 'enet' and 'unet'.
-4. WandB tracking can be incorporated by passing 'true' in the argument. 
-5. Training using class weights can be done by passing 'true' in the argument. 
-6. Cutmix augmentation can be included in the training process by passing 'cutmix' argument as 'true'.
-7. Other hyperparameters of the experiments such as learning rate, weight decay, momentum, gamma, number of epochs, batch sizes and splitting parameters can be changed in the config file itself. 
+1. Default config file `config.json` can be used to train the model with the defualt settings and various elements can be changed accordingly inside it.
+2. Available model architectures: 'enet' and 'unet'.
+3. WandB tracking can be incorporated by passing 'true' in the argument. 
+4. Training using class weights can be done by passing 'true' in the argument. 
+5. Cutmix augmentation can be included in the training process by passing 'cutmix' argument as 'true'.
+6. Other hyperparameters of the experiments such as learning rate, weight decay, momentum, gamma, number of epochs, batch sizes and splitting parameters can be changed in the config file itself. 
 
 Both the models ENet and UNet were trained on CutMix Augmentation and using Class Weights also and the results are present in the report. 

@@ -289,5 +289,6 @@ class VBLAgent():
         :return:
         """
         print("Please wait while finalizing the operation.. Thank you")
+        self.test()
         self.save_checkpoint()
         self.dataloader.finalize()
