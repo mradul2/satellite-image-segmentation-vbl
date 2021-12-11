@@ -32,10 +32,10 @@ def wandb_log(train_loss, val_loss, train_acc, val_acc, train_iou, val_iou, epoc
     wandb.log({
         'Loss/Training': train_loss,
         'Loss/Validation': val_loss,
-        'MeanIoU/Training': train_iou.mean(),
-        'MeanIoU/Validation': val_iou.mean(),
-        'MeanAccuracy/Training': train_acc.mean(),
-        'MeanAccuracy/Validation': val_acc.mean(),
+        'MeanIoU/Training': train_iou[0:1].mean(),
+        'MeanIoU/Validation': val_iou[0:1].mean(),
+        'MeanAccuracy/Training': train_acc[0:1].mean(),
+        'MeanAccuracy/Validation': val_acc[0:1].mean(),
     }, step=epoch)
 
     classes = ['un-classified', 'no-damage']
