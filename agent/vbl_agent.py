@@ -160,7 +160,7 @@ class VBLAgent():
             self.current_epoch = epoch
 
             train_loss, train_accuracy, train_iou = self.train_one_epoch()            
-            valid_loss, valid_accuracy, valid_iou = self.validate()
+            valid_loss, valid_accuracy, valid_iou, valid_output, valid_X, valid_y = self.validate()
 
             wandb_log(train_loss, valid_loss, train_accuracy, valid_accuracy, train_iou, valid_iou, self.current_epoch)
 
@@ -223,9 +223,9 @@ class VBLAgent():
         valid_accuracy = np.zeros((self.config.num_classes,), dtype=float)
         valid_iou = np.zeros((self.config.num_classes,), dtype=float)
 
-        # valid_X = []
-        # valid_y = []
-        # valid_results = []
+        valid_X = []
+        valid_y = []
+        valid_results = []
 
         for batch in self.dataloader.valid_loader:
             
@@ -235,16 +235,15 @@ class VBLAgent():
             outputs = self.model(inputs)
 
             metric = IoUAccuracy(self.config)
-            # np_output, iou, accu = metric.evaluate(outputs, labels)
-            iou, accu = metric.evaluate(outputs, labels)
+            np_output, iou, accu = metric.evaluate(outputs, labels)
 
-            # valid_results.append(np_output)            
+            valid_results.append(np_output)            
             valid_accuracy += accu
             valid_iou += iou
 
             inputs = np.transpose(inputs[0].cpu().detach().numpy(), (2,1,0))
-            # valid_X.append(inputs)
-            # valid_y.append(labels[0].cpu().detach().numpy())
+            valid_X.append(inputs)
+            valid_y.append(labels[0].cpu().detach().numpy())
             
             loss = self.loss(outputs, labels)
             
@@ -254,7 +253,7 @@ class VBLAgent():
         valid_accuracy /= len(self.dataloader.valid_loader)
         valid_iou /= len(self.dataloader.valid_loader)
 
-        return valid_loss, valid_accuracy, valid_iou
+        return valid_loss, valid_accuracy, valid_iou, valid_output, valid_X, valid_y
 
 
 

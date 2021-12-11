@@ -58,5 +58,4 @@ class IoUAccuracy:
         iou = score_dict["Class IoU"]
         accu = score_dict["Mean Accuracy"]
 
-        # return np_outputs.squeeze(), iou, accu
-        return iou, accu
+        return np_outputs.squeeze(), iou, accu
