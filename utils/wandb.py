@@ -69,9 +69,6 @@ def wandb_save_summary(valid_mean_accuracy: float,
     class_labels = {
         0: 'un-classified',
         1: 'no-damage',
-        2: 'minor-damage',
-        3: 'major-damage',
-        4: 'destroyed'
     }
 
     for i in range(len(valid_output)):

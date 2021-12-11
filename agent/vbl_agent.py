@@ -284,7 +284,6 @@ class VBLAgent():
         self.final_sumary()
         
 
-
     def finalize(self):
         """
         Finalize all the operations of the 2 Main classes of the process the operator and the data loader
