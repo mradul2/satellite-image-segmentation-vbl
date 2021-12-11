@@ -280,7 +280,7 @@ class VBLAgent():
             return
 
         print("Logging the final Metrics")
-        self.final_sumary()
+        self.final_summary()
         
 
     def finalize(self):
