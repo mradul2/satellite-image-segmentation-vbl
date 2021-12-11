@@ -261,7 +261,7 @@ class VBLAgent():
         
         valid_loss, valid_accuracy, valid_iou, valid_output, valid_X, valid_y = self.validate()
 
-        wandb_log_conf_matrix(valid_y, valid_output)
+        # wandb_log_conf_matrix(valid_y, valid_output)
 
         wandb_save_summary(valid_accuracy.mean(),
                            valid_iou.mean(),
