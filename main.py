@@ -39,17 +39,6 @@ def main():
         metavar='cutmix_training',
         default='true',
         help='Cutmix Augmented training mode or not')
-    arg_parser.add_argument(
-        '--epoch',
-        metavar='number_of_epochs',
-        default=100,
-        help='Number of Epochs for training')
-    arg_parser.add_argument(
-        '--bs',
-        metavar='batch_size',
-        default=2,
-        help='Batch size for training')
-    
     
     args = arg_parser.parse_args()
 
