@@ -12,9 +12,9 @@ Sample Notebook for Usage: [Notebook](https://www.kaggle.com/mradul2/vbl-main)
 ```bash 
 pip install wandb
 ```
-WandB is a experiment tracking tool and is used to log losses and metrics diring training, and can be used with the provided pipeline. 
+WandB is a experiment tracking tool and is used to log losses and metrics during training, and can be used with the provided pipeline. 
 
-Perovided solution experiment reports: [WandB](https://wandb.ai/mradul/vision-beyond-limits?workspace=user-mradul)
+Provided solution experiment reports: [WandB](https://wandb.ai/mradul/vision-beyond-limits?workspace=user-mradul)
 
 ## Installation
 ```bash
