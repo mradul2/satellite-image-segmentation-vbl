@@ -44,6 +44,17 @@ def main():
         metavar='cutmix_training',
         default='true',
         help='Cutmix Augmented training mode or not')
+    arg_parser.add_argument(
+        '--epoch,
+        metavar='number_of_epochs',
+        default=100,
+        help='Number of Epochs for training')
+    arg_parser.add_argument(
+        '--bs',
+        metavar='batch_size',
+        default=2,
+        help='Batch size for training')
+    
     
     args = arg_parser.parse_args()
 
@@ -56,6 +67,8 @@ def main():
     config.model = args.model
     config.weighted = args.weighted
     config.cutmix = args.cutmix
+    config.train_batch_size = args.bs
+    config.max_epoch = args.epoch
 
     # Create the Agent and pass all the configuration to it then run it..
     agent = VBLAgent(config)

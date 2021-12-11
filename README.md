@@ -35,7 +35,8 @@ Run the script:
 ```bash
 python3 main.py config.json [--mode MODE] [--model MODEL]
         [--wandb WANDB_SETTING] [--weighted WEIGHTED_TRAINING]
-        [--cutmix CUTMIX_TRAINING]
+        [--cutmix CUTMIX_TRAINING] [--bs TRAIN_BATCH_SIZE]
+        [--epoch NUMBER_OF_EPOCHS]
 
 ```
 
