@@ -50,8 +50,6 @@ def main():
     config.model = args.model
     config.weighted = args.weighted
     config.cutmix = args.cutmix
-    config.train_batch_size = args.bs
-    config.max_epoch = args.epoch
 
     # Create the Agent and pass all the configuration to it then run it..
     agent = VBLAgent(config)
