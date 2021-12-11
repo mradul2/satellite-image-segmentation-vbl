@@ -192,7 +192,7 @@ class VBLAgent():
             outputs = self.model(inputs)
 
             metric = IoUAccuracy(self.config)
-            iou, accu = metric.evaluate(outputs, labels)
+            np_output, iou, accu = metric.evaluate(outputs, labels)
             
             train_accuracy += accu
             train_iou += iou
