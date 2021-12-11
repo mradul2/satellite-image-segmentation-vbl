@@ -4,7 +4,7 @@
   "cuda": true,
   "gpu_device": 0,
   "seed": 1337,
-  "num_classes": 5,
+  "num_classes": 2,
   "ignore_index": -100,
   "learning_rate": 0.0005,
   "gamma": 0.95,

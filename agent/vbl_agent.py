@@ -259,7 +259,7 @@ class VBLAgent():
 
 
     def final_summary(self):
-        self.load_checkpoint(self.config.checkpoint_dir + self.config.bestpoint_file)
+        
         valid_loss, valid_accuracy, valid_iou, valid_output, valid_X, valid_y = self.validate()
 
         wandb_log_conf_matrix(valid_y, valid_output)
@@ -272,6 +272,19 @@ class VBLAgent():
                            valid_y)
 
 
+    def test(self):
+        print("Testing Mode")
+        try:
+            self.load_checkpoint(self.config.checkpoint_dir + self.config.bestpoint_file)
+        except:
+            print("Pretrained Model not successfully Loaded")
+            return
+
+        print("Logging the final Metrics")
+        self.final_sumary()
+        
+
+
     def finalize(self):
         """
         Finalize all the operations of the 2 Main classes of the process the operator and the data loader
@@ -280,7 +293,3 @@ class VBLAgent():
         print("Please wait while finalizing the operation.. Thank you")
         self.save_checkpoint()
         self.dataloader.finalize()
-
-        if self.config.wandb:
-            print("Logging Final Metrics")
-            # self.final_summary()

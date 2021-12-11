@@ -38,7 +38,7 @@ def wandb_log(train_loss, val_loss, train_acc, val_acc, train_iou, val_iou, epoc
         'MeanAccuracy/Validation': val_acc.mean(),
     }, step=epoch)
 
-    classes = ['un-classified', 'no-damage', 'minor-damage', 'major-damage', 'destroyed']
+    classes = ['un-classified', 'no-damage']
 
     for num in range(len(classes)):
         wandb.log({
