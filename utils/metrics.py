@@ -46,7 +46,7 @@ class IoUAccuracy:
 
     def __init__(self, config=None):
         self.config = config
-        self.num_classes = config.num_classes
+        self.num_classes = 2
 
     def evaluate(self, outputs, labels):
         output_cvt = torch.argmax(outputs, dim=1)
